@@ -1,6 +1,7 @@
 -module(l).
 -export([append/2]).
 
+
 %% API
 
 -spec append(list(), list()) -> list().
