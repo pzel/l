@@ -4,6 +4,7 @@
 
 .deps_plt
 .eunit
+.rebar/*
 
 deps
 erl_crash.dump
