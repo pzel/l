@@ -16,10 +16,14 @@ append_empty_right() ->
     ?FORALL(Xs, list(), l:append(Xs, []) == Xs).
 append_two_singletons_test() ->
     ?assertMatch([1,2], l:append([1], [2])).
-append_is_plusplus() ->
-    %% This is a cop-out. Todo: find inductive property
-    ?FORALL({Xs,Ys}, {list(),list()},
-            l:append(Xs, Ys) == Xs ++ Ys).
+append_inductive_left() ->
+    ?FORALL({Xs,Ys}, {non_empty(list()),non_empty(list())},
+            l:append(Xs, Ys) ==
+                l:append([l:head(Xs)], l:append(l:tail(Xs), Ys))).
+append_inductive_right() ->
+    ?FORALL({Xs,Ys}, {non_empty(list()),non_empty(list())},
+            l:append(Xs, Ys) ==
+                l:append(Xs, l:append([l:head(Ys)], l:tail(Ys)))).
 
 %% head/1
 head_of_empty_list_test() ->
@@ -88,7 +92,8 @@ reverse_inductive1() ->
 basic_properties_test_() ->
     [?PROP(append_empty_left),
      ?PROP(append_empty_right),
-     ?PROP(append_is_plusplus),
+     ?PROP(append_inductive_left),
+     ?PROP(append_inductive_right),
      ?PROP(head_is_de_cons),
      ?PROP(tail_is_compliment_of_de_cons),
      ?PROP(reverse_inductive1),
