@@ -57,6 +57,12 @@ init_is_rev_tl_rev() ->
             l:init(Xs) == lists:reverse(tl(lists:reverse(Xs)))).
 
 %% null/1
+null_of_empty_list_test() ->
+    ?assertMatch(true, l:null([])).
+null_of_nonempty_is_false() ->
+    ?FORALL(Xs, non_empty(list()),
+            l:null(Xs) == false).
+
 %% length/1
 
 %%
@@ -86,5 +92,6 @@ basic_properties_test_() ->
      ?PROP(head_is_de_cons),
      ?PROP(tail_is_compliment_of_de_cons),
      ?PROP(reverse_inductive1),
-     ?PROP(init_is_rev_tl_rev)
+     ?PROP(init_is_rev_tl_rev),
+     ?PROP(null_of_nonempty_is_false)
     ].

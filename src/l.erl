@@ -4,6 +4,7 @@
          last/1,
          tail/1,
          init/1,
+         null/1,
          reverse/1
         ]).
 
@@ -24,6 +25,10 @@ tail(L)              -> erlang:tl(L).
 
 -spec init(list(A)) -> list(A) | none().
 init(L)             -> reverse(tail(reverse(L))).
+
+-spec null(list()) -> boolean().
+null([])           -> true;
+null([_|_])        -> false.
 
 -spec reverse(list(A)) -> list(A).
 reverse(L)             -> reverse(L,[]).
