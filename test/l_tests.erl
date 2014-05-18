@@ -49,6 +49,13 @@ tail_is_compliment_of_de_cons() ->
 
 
 %% init/1
+init_of_empty_list_test() ->
+    ?assertError(badarg, l:init([])).
+
+init_is_rev_tl_rev() ->
+    ?FORALL(Xs, non_empty(list()),
+            l:init(Xs) == l:reverse(l:tail(l:reverse(Xs)))).
+
 %% null/1
 %% length/1
 
@@ -78,5 +85,6 @@ basic_properties_test_() ->
      ?PROP(append_is_plusplus),
      ?PROP(head_is_de_cons),
      ?PROP(tail_is_compliment_of_de_cons),
-     ?PROP(reverse_inductive1)
+     ?PROP(reverse_inductive1),
+     ?PROP(init_is_rev_tl_rev)
     ].
