@@ -68,6 +68,12 @@ null_of_nonempty_is_false() ->
             l:null(Xs) == false).
 
 %% length/1
+length_of_empty_list_test() ->
+    ?assertMatch(0, l:length([])).
+length_of_nonempty_inductive() ->
+    ?FORALL(Xs, non_empty(list()),
+            l:length(Xs) == 1 + l:length(tl(Xs))).
+
 
 %%
 %% List transformations
@@ -98,5 +104,6 @@ basic_properties_test_() ->
      ?PROP(tail_is_compliment_of_de_cons),
      ?PROP(reverse_inductive1),
      ?PROP(init_is_rev_tl_rev),
-     ?PROP(null_of_nonempty_is_false)
+     ?PROP(null_of_nonempty_is_false),
+     ?PROP(length_of_nonempty_inductive)
     ].

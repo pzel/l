@@ -5,6 +5,7 @@
          tail/1,
          init/1,
          null/1,
+         length/1,
          reverse/1
         ]).
 
@@ -29,6 +30,10 @@ init(L)             -> reverse(tail(reverse(L))).
 -spec null(list()) -> boolean().
 null([])           -> true;
 null([_|_])        -> false.
+
+
+-spec length(list()) -> non_neg_integer().
+length(L)            -> erlang:length(L).
 
 -spec reverse(list(A)) -> list(A).
 reverse(L)             -> reverse(L,[]).
