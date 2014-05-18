@@ -54,7 +54,7 @@ init_of_empty_list_test() ->
 
 init_is_rev_tl_rev() ->
     ?FORALL(Xs, non_empty(list()),
-            l:init(Xs) == l:reverse(l:tail(l:reverse(Xs)))).
+            l:init(Xs) == lists:reverse(tl(lists:reverse(Xs)))).
 
 %% null/1
 %% length/1

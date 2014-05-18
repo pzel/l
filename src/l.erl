@@ -23,9 +23,7 @@ last(L)             -> l:head(l:reverse(L)).
 tail(L)              -> erlang:tl(L).
 
 -spec init(list(A)) -> list(A) | none().
-init(L)             -> init(L,[]).
-init([H|Tail], Acc) -> init(Tail, [H|Acc]);
-init([], Acc)       -> reverse(tail(Acc)).
+init(L)             -> reverse(tail(reverse(L))).
 
 -spec reverse(list(A)) -> list(A).
 reverse(L)             -> reverse(L,[]).
