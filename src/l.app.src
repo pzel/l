@@ -1,0 +1,14 @@
+{application, l,
+ [
+  {description, "Comprehensive list processing library"},
+  {vsn, "0.0.1"},
+  {modules, [
+             l
+            ]},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.
