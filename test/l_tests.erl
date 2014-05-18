@@ -5,8 +5,11 @@
 
 -define(PROP(A), ?_assert(proper:quickcheck(A()))).
 
-%% Basics
+%%
+%% Basic functions
+%%
 
+%% append/2
 append_two_singletons_test() ->
     ?assertMatch([1,2], l:append([1], [2])).
 
@@ -20,6 +23,15 @@ append_is_plusplus() ->
     %% This is a cop-out. Todo: find inductive property
     ?FORALL({Xs,Ys}, {list(),list()},
             l:append(Xs, Ys) == Xs ++ Ys).
+
+
+%% head/1
+head_of_singleton_test() ->
+    ?assertMatch(1, l:head([1])).
+
+head_of_empty_list_test() ->
+    ?assertError(badarg, l:head([])).
+
 
 
 %%
