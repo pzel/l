@@ -9,7 +9,6 @@
          reverse/1
         ]).
 
-
 %% API
 
 -spec append(list(), list()) -> list().
@@ -30,7 +29,6 @@ init(L)             -> reverse(tail(reverse(L))).
 -spec null(list()) -> boolean().
 null([])           -> true;
 null([_|_])        -> false.
-
 
 -spec length(list()) -> non_neg_integer().
 length(L)            -> erlang:length(L).

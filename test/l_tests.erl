@@ -51,7 +51,6 @@ tail_is_compliment_of_de_cons() ->
     ?FORALL({X,Xs}, {term(), non_empty(list())},
             l:tail([X|Xs]) == Xs).
 
-
 %% init/1
 init_of_empty_list_test() ->
     ?assertError(badarg, l:init([])).
@@ -83,13 +82,14 @@ length_of_nonempty_inductive() ->
 %% reverse/1
 reverse_of_empty_test() ->
     ?assertMatch([], l:reverse([])).
-
 reverse_of_singleton_test() ->
     ?assertMatch([1], l:reverse([1])).
-
 reverse_inductive1() ->
     ?FORALL(Xs, non_empty(list()),
             l:reverse(tl(Xs)) ++ [hd(Xs)] == l:reverse(Xs)).
+reverse_twice_is_id() ->
+    ?FORALL(Xs, non_empty(list()),
+            l:reverse(l:reverse(Xs)) == Xs).
 
 %%
 %% Property instantiation
@@ -103,6 +103,7 @@ basic_properties_test_() ->
      ?PROP(head_is_de_cons),
      ?PROP(tail_is_compliment_of_de_cons),
      ?PROP(reverse_inductive1),
+     ?PROP(reverse_twice_is_id),
      ?PROP(init_is_rev_tl_rev),
      ?PROP(null_of_nonempty_is_false),
      ?PROP(length_of_nonempty_inductive)
