@@ -98,6 +98,18 @@ reverse_twice_is_id() ->
     ?FORALL(Xs, non_empty(list()),
             l:reverse(l:reverse(Xs)) == Xs).
 
+
+%% intersperse/2
+intersperse_empty_test() ->
+    ?assertMatch([], l:intersperse(0,[])).
+intersperse_one_test() ->
+    ?assertMatch([1], l:intersperse(0,[1])).
+intersperse_two_test() ->
+    ?assertMatch([1,0,2], l:intersperse(0,[1,2])).
+intersperse_length() ->
+    ?FORALL(Xs, non_empty(list()),
+            length(l:intersperse(hd(Xs),Xs)) == length(Xs) * 2 - 1).
+
 %%
 %% Property instantiation
 %%
@@ -112,6 +124,7 @@ basic_properties_test_() ->
      ?PROP(map_inductive),
      ?PROP(reverse_inductive1),
      ?PROP(reverse_twice_is_id),
+     ?PROP(intersperse_length),
      ?PROP(init_is_rev_tl_rev),
      ?PROP(null_of_nonempty_is_false),
      ?PROP(length_of_nonempty_inductive)

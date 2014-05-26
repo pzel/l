@@ -6,8 +6,10 @@
          init/1,
          null/1,
          length/1,
+
          map/2,
-         reverse/1
+         reverse/1,
+         intersperse/2
         ]).
 
 %% API
@@ -41,3 +43,8 @@ map(F,L)                        -> [F(X) || X <- L].
 reverse(L)             -> reverse(L,[]).
 reverse([], Acc)       -> Acc;
 reverse([H|T], Acc)    -> reverse(T, [H|Acc]).
+
+-spec intersperse(A, list(A)) -> list(A).
+intersperse(_,[])            -> [];
+intersperse(_,[Last])        -> [Last];
+intersperse(E,[H|T])         -> [H,E|intersperse(E,T)].
