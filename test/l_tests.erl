@@ -110,6 +110,26 @@ intersperse_length() ->
     ?FORALL(Xs, non_empty(list()),
             length(l:intersperse(hd(Xs),Xs)) == length(Xs) * 2 - 1).
 
+%% intercalate/2
+intercalate_empty_test() ->
+    ?assertMatch([], l:intercalate([], [])).
+intercalate_one_test() ->
+    ?assertMatch([7], l:intercalate([1], [[7]])).
+intercalate_two_test() ->
+    ?assertMatch([7,1,8], l:intercalate([1], [[7],[8]])).
+
+
+%% concat/1
+concat_empty_test() ->
+    ?assertMatch([], l:concat("")).
+concat_one_test() ->
+    ?assertMatch("a", l:concat(["a"])).
+concat_two_test() ->
+    ?assertMatch("ab", l:concat(["a", "b"])).
+concat_three_test() ->
+    ?assertMatch("abc", l:concat(["a", "b", "c"])).
+
+
 %%
 %% Property instantiation
 %%

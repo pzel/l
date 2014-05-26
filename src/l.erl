@@ -9,7 +9,10 @@
 
          map/2,
          reverse/1,
-         intersperse/2
+         intersperse/2,
+         intercalate/2,
+
+         concat/1
         ]).
 
 %% API
@@ -48,3 +51,13 @@ reverse([H|T], Acc)    -> reverse(T, [H|Acc]).
 intersperse(_,[])            -> [];
 intersperse(_,[Last])        -> [Last];
 intersperse(E,[H|T])         -> [H,E|intersperse(E,T)].
+
+-spec intercalate(list(A), list(list(A))) -> list(A).
+intercalate(E,L)                          -> concat(intersperse(E,L)).
+
+
+-spec concat(list(list(A))) -> list(A).
+concat([])                  -> [];
+concat([L]) when is_list(L) -> L;
+concat([L1|LS]) when is_list(L1) ->
+    append(L1, concat(LS)).
