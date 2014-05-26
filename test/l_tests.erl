@@ -79,6 +79,13 @@ length_of_nonempty_inductive() ->
 %%
 
 %% map/2
+map_of_empty_test() ->
+    ?assertMatch([], l:map(fun(X)-> X end, [])).
+map_inductive() ->
+    F = fun(X) -> X+1 end,
+    ?FORALL(Xs, non_empty(list(integer())),
+            l:map(F, Xs) == [F(hd(Xs)) | l:map(F,tl(Xs))]).
+
 %% reverse/1
 reverse_of_empty_test() ->
     ?assertMatch([], l:reverse([])).
@@ -102,6 +109,7 @@ basic_properties_test_() ->
      ?PROP(append_inductive_right),
      ?PROP(head_is_de_cons),
      ?PROP(tail_is_compliment_of_de_cons),
+     ?PROP(map_inductive),
      ?PROP(reverse_inductive1),
      ?PROP(reverse_twice_is_id),
      ?PROP(init_is_rev_tl_rev),

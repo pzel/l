@@ -6,6 +6,7 @@
          init/1,
          null/1,
          length/1,
+         map/2,
          reverse/1
         ]).
 
@@ -32,6 +33,9 @@ null([_|_])        -> false.
 
 -spec length(list()) -> non_neg_integer().
 length(L)            -> erlang:length(L).
+
+-spec map(fun((A)->B), list(A)) -> list(B).
+map(F,L)                        -> [F(X) || X <- L].
 
 -spec reverse(list(A)) -> list(A).
 reverse(L)             -> reverse(L,[]).
