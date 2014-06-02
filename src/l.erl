@@ -11,6 +11,7 @@
          reverse/1,
          intersperse/2,
          intercalate/2,
+         transpose/1,
 
          concat/1
         ]).
@@ -54,6 +55,11 @@ intersperse(E,[H|T])         -> [H,E|intersperse(E,T)].
 
 -spec intercalate(list(A), list(list(A))) -> list(A).
 intercalate(E,L)                          -> concat(intersperse(E,L)).
+
+-spec transpose(list(list(A))) -> (list(list(A))).
+transpose(Ls = [[_|_]|_])      -> [ map(fun head/1,Ls) | transpose(map(fun tail/1,Ls)) ];
+transpose([[]|_])              -> [];
+transpose([])                  -> [].
 
 
 -spec concat(list(list(A))) -> list(A).
