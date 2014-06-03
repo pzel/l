@@ -64,3 +64,16 @@ prop_transpose_twice_is_id() ->
 prop_length_transpose_is_length_head() ->
     ?FORALL(Xs, helpers:matrix(integer()),
             l:length(l:transpose(Xs)) == length(hd(Xs))).
+
+% subsequences/1
+subsequences_empty_test() ->
+    ?assertEqual([""], l:subsequences("")).
+subsequences_one_test() ->
+    ?assertEqual(["", "a"], l:subsequences("a")).
+subsequences_abc_test() ->
+    ?assertEqual([[],"c","b","bc","a","ac","ab","abc"],
+                 l:subsequences("abc")).
+prop_subsequences_length() ->
+    ?FORALL(Xs, helpers:short_list(integer()),
+            l:length(l:subsequences(Xs)) ==
+                erlang:trunc(math:pow(2,length(Xs)))).

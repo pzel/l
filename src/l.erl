@@ -12,6 +12,7 @@
          intersperse/2,
          intercalate/2,
          transpose/1,
+         subsequences/1,
 
          concat/1
         ]).
@@ -61,6 +62,13 @@ transpose(Ls = [[_|_]|_])      -> [ map(fun head/1,Ls) | transpose(map(fun tail/
 transpose([[]|_])              -> [];
 transpose([])                  -> [].
 
+-spec subsequences(list(A)) -> list(list(A)).
+subsequences([])             -> [[]];
+subsequences(L) when is_list(L) ->
+    H = head(L),
+    Subseqs = subsequences(tail(L)),
+    append(Subseqs, map(fun(Subseq) -> [ H | Subseq ] end,
+                        Subseqs)).
 
 -spec concat(list(list(A))) -> list(A).
 concat([])                  -> [];

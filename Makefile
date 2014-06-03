@@ -59,7 +59,8 @@ doc:
 	$(REBAR) skip_deps=true doc
 
 eunit: compile clean-common-test-data
-	$(REBAR) skip_deps=true eunit
+	@if [ $$SUITE ]; then $(REBAR) skip_deps=true eunit suite=$$SUITE; \
+                         else $(REBAR) skip_deps=true eunit; fi
 
 test: compile eunit
 
