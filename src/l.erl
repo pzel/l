@@ -13,8 +13,13 @@
          intercalate/2,
          transpose/1,
          subsequences/1,
+         permutations/1,
 
-         concat/1
+         concat/1,
+
+         filter/2,
+
+         delete/2
         ]).
 
 %% API
@@ -64,11 +69,30 @@ transpose([])                  -> [].
 
 -spec subsequences(list(A)) -> list(list(A)).
 subsequences([])             -> [[]];
-subsequences(L) when is_list(L) ->
-    H = head(L),
-    Subseqs = subsequences(tail(L)),
+subsequences([H|T])          ->
+    Subseqs = subsequences(T),
     append(Subseqs, map(fun(Subseq) -> [ H | Subseq ] end,
                         Subseqs)).
+
+-spec permutations(list(A)) -> list(list(A)).
+permutations([])            -> [[]];
+permutations([El])          -> [[El]];
+permutations(List)          ->
+    F = fun(El)-> [ [El|Rest] || Rest <- permutations(delete(El, List)) ] end,
+    concat(lists:map(F,List)).
+
+-spec filter(fun((A)->boolean()), list(A)) -> list(A).
+filter(F, Xs)                              ->
+    [ X || X <- Xs, F(X) == true ].
+
+-spec delete(A, list(A)) -> list(A).
+delete(X,Xs)             -> delete(X,Xs,[]).
+
+% @doc internal
+-spec delete(A, list(A), list(A)) -> list(A).
+delete(X,[X|T],Acc)     -> append(reverse(Acc), T);
+delete(X,[Y|T],Acc)     -> delete(X, T, [Y|Acc]);
+delete(_,[],Acc)        -> reverse(Acc).
 
 -spec concat(list(list(A))) -> list(A).
 concat([])                  -> [];

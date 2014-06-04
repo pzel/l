@@ -77,3 +77,34 @@ prop_subsequences_length() ->
     ?FORALL(Xs, helpers:short_list(integer()),
             l:length(l:subsequences(Xs)) ==
                 erlang:trunc(math:pow(2,length(Xs)))).
+
+% permutations/1
+permutations_empty_test() ->
+    ?assertEqual([""], l:permutations("")).
+permutations_singleton_test() ->
+    ?assertEqual(["a"], l:permutations("a")).
+permutations_abc_test() ->
+    ?assertEqual(["abc","acb","bac","bca","cab","cba"],
+                 l:permutations("abc")).
+
+
+%% This property times out. Research how to increase eunit timeout.
+%% prop_permutations_length() ->
+%%     ?FORALL(Xs, helpers:short_list(char()),
+%%             l:length(l:permutations(Xs)) ==
+%%                 helpers:factorial(length(Xs))).
+
+%% Instead of quickchecking, we'll just make the lists ourselves
+permutations_manual_test() ->
+    Fac = fun helpers:factorial/1,
+    LP = fun(X) -> l:length(l:permutations(X)) end,
+    ?assertEqual(Fac(0), LP("")),
+    ?assertEqual(Fac(1), LP("a")),
+    ?assertEqual(Fac(2), LP("ab")),
+    ?assertEqual(Fac(2), LP("aa")),
+    ?assertEqual(Fac(3), LP("abc")),
+    ?assertEqual(Fac(3), LP("aaa")),
+    ?assertEqual(Fac(4), LP("abcd")),
+    ?assertEqual(Fac(4), LP("aaaa")),
+    ?assertEqual(Fac(5), LP("abcde")),
+    ?assertEqual(Fac(5), LP("aaaaa")).
