@@ -15,23 +15,19 @@ concat_two_test() ->
 concat_three_test() ->
     ?assertEqual("abc", l:concat(["a", "b", "c"])).
 
+%% @TODO:
+%% Add the property:
+%% forAll Xs = length(concat(Xs) == sum(map length Xs)
+%% we need the sum function for this
+
 %% concat_map/2
 concat_map_empty_test() ->
-    ?assertEqual([], l:concat_map(fun wrap/1, [])).
+    ?assertEqual([], l:concat_map(repF(1), [])).
 prop_concat_map_id() ->
     ?FORALL(Xs, list(),
-            Xs == l:concat_map(fun wrap/1, Xs)).
+            Xs == l:concat_map(repF(1), Xs)).
 prop_concat_map_length() ->
-    ?FORALL(Xs, list(integer()),
-            l:length(Xs) * 2 == length(l:concat_map(fun wrap_dup/1, Xs))).
+    ?FORALL({N,Xs}, {non_neg_integer(), list(integer())},
+            l:length(Xs) * N == length(l:concat_map(repF(N), Xs))).
 
-%% Helpers
-wrap(X) -> [X].
-
-%% TODO: rewrite the concat_map_length property by generating a function
-%%       F that duplicates its argument N times and verify that
-%%       length(Xs) * N
-%%       ==
-%%       length(l:concat_map(make_wrap(N), Xs)
-%%       l:replicate is needed to do this
-wrap_dup(X) -> [X,X].
+repF(N)-> fun(X)-> l:replicate(N,X) end.
