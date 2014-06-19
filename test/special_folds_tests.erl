@@ -5,7 +5,6 @@
 %%  Special folds
 %%
 
-
 %% concat/1
 concat_empty_test() ->
     ?assertEqual([], l:concat("")).
@@ -15,3 +14,17 @@ concat_two_test() ->
     ?assertEqual("ab", l:concat(["a", "b"])).
 concat_three_test() ->
     ?assertEqual("abc", l:concat(["a", "b", "c"])).
+
+%% concat_map/2
+concat_map_empty_test() ->
+    ?assertEqual([], l:concat_map(fun wrap/1, [])).
+prop_concat_map_id() ->
+    ?FORALL(Xs, list(),
+            Xs == l:concat_map(fun wrap/1, Xs)).
+prop_concat_map_length() ->
+    ?FORALL(Xs, list(integer()),
+            l:length(Xs) * 2 == length(l:concat_map(fun wrap_dup/1, Xs))).
+
+%% Helpers
+wrap(X) -> [X].
+wrap_dup(X) -> [X,X].

@@ -16,6 +16,7 @@
          permutations/1,
 
          concat/1,
+         concat_map/2,
 
          filter/2,
 
@@ -99,3 +100,6 @@ concat([])                  -> [];
 concat([L]) when is_list(L) -> L;
 concat([L1|LS]) when is_list(L1) ->
     append(L1, concat(LS)).
+
+-spec concat_map(fun((A) -> list(B)), list(A)) -> list(B).
+concat_map(F, L) when is_function(F) -> concat(map(F, L)).
