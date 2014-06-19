@@ -18,6 +18,8 @@
          concat/1,
          concat_map/2,
 
+         replicate/2,
+
          filter/2,
 
          delete/2
@@ -89,7 +91,7 @@ filter(F, Xs)                              ->
 -spec delete(A, list(A)) -> list(A).
 delete(X,Xs)             -> delete(X,Xs,[]).
 
-% @doc internal
+%% @doc internal
 -spec delete(A, list(A), list(A)) -> list(A).
 delete(X,[X|T],Acc)     -> append(reverse(Acc), T);
 delete(X,[Y|T],Acc)     -> delete(X, T, [Y|Acc]);
@@ -98,8 +100,16 @@ delete(_,[],Acc)        -> reverse(Acc).
 -spec concat(list(list(A))) -> list(A).
 concat([])                  -> [];
 concat([L]) when is_list(L) -> L;
-concat([L1|LS]) when is_list(L1) ->
-    append(L1, concat(LS)).
+concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS)).
 
 -spec concat_map(fun((A) -> list(B)), list(A)) -> list(B).
 concat_map(F, L) when is_function(F) -> concat(map(F, L)).
+
+-spec replicate(non_neg_integer(), T) -> list(T).
+replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
+replicate(N,_) when is_integer(N), N<0 -> error(badarg).
+
+%% @doc internal
+-spec replicate(non_neg_integer(), T, list(T)) -> list(T).
+replicate(0,_,Acc) -> Acc;
+replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).

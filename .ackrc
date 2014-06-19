@@ -1,0 +1,2 @@
+--ignore-dir=deps
+--ignore-dir=.eunit
