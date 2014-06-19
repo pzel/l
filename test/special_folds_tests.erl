@@ -27,4 +27,11 @@ prop_concat_map_length() ->
 
 %% Helpers
 wrap(X) -> [X].
+
+%% TODO: rewrite the concat_map_length property by generating a function
+%%       F that duplicates its argument N times and verify that
+%%       length(Xs) * N
+%%       ==
+%%       length(l:concat_map(make_wrap(N), Xs)
+%%       l:replicate is needed to do this
 wrap_dup(X) -> [X,X].
