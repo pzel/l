@@ -30,4 +30,15 @@ prop_concat_map_length() ->
     ?FORALL({N,Xs}, {non_neg_integer(), list(integer())},
             l:length(Xs) * N == length(l:concat_map(repF(N), Xs))).
 
+%% and/1
+and_badarg_test() ->
+    ?assertError(badarg, l:and_([hello, 1, {}])).
+and_empty_test() ->
+    ?assertEqual(true, l:and_([])).
+prop_and_all_true() ->
+    ?FORALL(Xs, list(true), true == l:and_(Xs)).
+prop_and_at_least_one_false() ->
+    ?FORALL({Ts,Fs}, {list(true), non_empty(list(false))},
+            false == l:and_(l:append(Ts,Fs))).
+
 repF(N)-> fun(X)-> l:replicate(N,X) end.

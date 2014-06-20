@@ -25,11 +25,14 @@ The following functions are implemented:
          permutations/1,
 
          concat/1,
+         concat_map/2,
+         and_/1,
+
+         replicate/2,
 
          filter/2,
 
          delete/2
-
 
 Project roadmap
 ---------------

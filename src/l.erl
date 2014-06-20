@@ -17,6 +17,7 @@
 
          concat/1,
          concat_map/2,
+         and_/1,
 
          replicate/2,
 
@@ -105,6 +106,13 @@ concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS)).
 -spec concat_map(fun((A) -> list(B)), list(A)) -> list(B).
 concat_map(F, L) when is_function(F) -> concat(map(F, L)).
 
+-spec and_(list(boolean())) -> boolean().
+and_([])                    -> true;
+and_([false|_])             -> false;
+and_([true|Rest])           -> and_(Rest);
+and_(_)                     -> error(badarg).
+
+
 -spec replicate(non_neg_integer(), T) -> list(T).
 replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
 replicate(N,_) when is_integer(N), N<0 -> error(badarg).
@@ -113,3 +121,4 @@ replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 -spec replicate(non_neg_integer(), T, list(T)) -> list(T).
 replicate(0,_,Acc) -> Acc;
 replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).
+
