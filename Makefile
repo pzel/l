@@ -19,7 +19,7 @@ ERLFLAGS= -pa $(CURDIR)/.eunit -pa $(CURDIR)/ebin -pa $(CURDIR)/deps/*/ebin
 
 DEPS_PLT=$(CURDIR)/.deps_plt
 DEPS=erts kernel stdlib
-
+DIALYZER_OPTS=-Wunmatched_returns -Werror_handling -Wrace_conditions -Wunderspecs
 # =============================================================================
 # Verify that the programs we need to run are installed on this system
 # =============================================================================
@@ -72,7 +72,7 @@ $(DEPS_PLT):
 	   --apps $(DEPS) -r deps
 
 dialyzer: $(DEPS_PLT)
-	dialyzer --fullpath --plt $(DEPS_PLT) -Wrace_conditions -r ./ebin
+	dialyzer --fullpath --plt $(DEPS_PLT) $(DIALYZER_OPTS) -r ./ebin
 
 typer:
 	typer --plt $(DEPS_PLT) -r ./src
