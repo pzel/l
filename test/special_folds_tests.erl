@@ -52,4 +52,17 @@ prop_or_at_least_one_true() ->
     ?FORALL({Fs,Ts}, {list(false), non_empty(list(true))},
             true == l:or_(l:append(Ts,Fs))).
 
+%% any/2
+any_badarg1_test() ->
+    ?assertError(badarg, l:any(notfun, [])).
+any_badarg2_test() ->
+    ?assertError(badarg, l:any(fun(_) -> true end, notlist)).
+prop_any_always_true() ->
+    ?FORALL({Fs,Ts}, {list(false), non_empty(list(true))},
+            true == l:any(fun is_true/1, l:append(Fs,Ts))).
+prop_any_always_false() ->
+    ?FORALL(Fs, non_empty(list(false)),
+            false == l:any(fun is_true/1, Fs)).
+
 repF(N)-> fun(X)-> l:replicate(N,X) end.
+is_true(X) -> X == true.

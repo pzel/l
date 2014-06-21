@@ -19,6 +19,7 @@
          concat_map/2,
          and_/1,
          or_/1,
+         any/2,
 
          replicate/2,
 
@@ -119,7 +120,13 @@ or_([true|_])              -> true;
 or_([false|Rest])          -> or_(Rest);
 or_(_)                     -> error(badarg).
 
--spec replicate(non_neg_integer(), T) -> list(T).
+-spec any(fun((A)->boolean()), list(A)) -> boolean().
+any(F,[])    when is_function(F,1)      -> false;
+any(F,[H|T]) when is_function(F,1)      ->
+    F(H) orelse any(F, T);
+any(_,_)                                -> error(badarg).
+
+-spec replicate(non_neg_integer(), A) -> list(A).
 replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
 replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 
@@ -127,4 +134,3 @@ replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 -spec replicate(non_neg_integer(), T, list(T)) -> list(T).
 replicate(0,_,Acc) -> Acc;
 replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).
-
