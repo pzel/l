@@ -41,4 +41,15 @@ prop_and_at_least_one_false() ->
     ?FORALL({Ts,Fs}, {list(true), non_empty(list(false))},
             false == l:and_(l:append(Ts,Fs))).
 
+%% or/1
+or_badarg_test() ->
+    ?assertError(badarg, l:or_([hello, 1, {}])).
+or_empty_test() ->
+    ?assertEqual(false, l:or_([])).
+prop_or_all_false() ->
+    ?FORALL(Xs, list(false), false == l:or_(Xs)).
+prop_or_at_least_one_true() ->
+    ?FORALL({Fs,Ts}, {list(false), non_empty(list(true))},
+            true == l:or_(l:append(Ts,Fs))).
+
 repF(N)-> fun(X)-> l:replicate(N,X) end.
