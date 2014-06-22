@@ -57,12 +57,29 @@ any_badarg1_test() ->
     ?assertError(badarg, l:any(notfun, [])).
 any_badarg2_test() ->
     ?assertError(badarg, l:any(fun(_) -> true end, notlist)).
+any_empty_test() ->
+    ?assertEqual(false, l:any(fun is_true/1, [])).
 prop_any_always_true() ->
     ?FORALL({Fs,Ts}, {list(false), non_empty(list(true))},
             true == l:any(fun is_true/1, l:append(Fs,Ts))).
 prop_any_always_false() ->
     ?FORALL(Fs, non_empty(list(false)),
             false == l:any(fun is_true/1, Fs)).
+
+
+%% all/2
+all_badarg1_test() ->
+    ?assertError(badarg, l:all(notfun, [])).
+all_badarg2_test() ->
+    ?assertError(badarg, l:all(fun(_) -> true end, notlist)).
+all_empty_test() ->
+    ?assertEqual(true, l:all(fun is_true/1, [])).
+prop_all_always_false() ->
+    ?FORALL({Ts,Fs}, {list(true), non_empty(list(false))},
+            false == l:all(fun is_true/1, l:append(Ts,Fs))).
+prop_all_always_true() ->
+    ?FORALL(Ts, list(true),
+            true == l:all(fun is_true/1, Ts)).
 
 repF(N)-> fun(X)-> l:replicate(N,X) end.
 is_true(X) -> X == true.

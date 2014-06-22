@@ -20,6 +20,7 @@
          and_/1,
          or_/1,
          any/2,
+         all/2,
 
          replicate/2,
 
@@ -125,6 +126,12 @@ any(F,[])    when is_function(F,1)      -> false;
 any(F,[H|T]) when is_function(F,1)      ->
     F(H) orelse any(F, T);
 any(_,_)                                -> error(badarg).
+
+-spec all(fun((A)->boolean()), list(A)) -> boolean().
+all(F,[])    when is_function(F,1)      -> true;
+all(F,[H|T]) when is_function(F,1)      ->
+    F(H) andalso all(F, T);
+all(_,_)                                -> error(badarg).
 
 -spec replicate(non_neg_integer(), A) -> list(A).
 replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
