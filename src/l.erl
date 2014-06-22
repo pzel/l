@@ -15,6 +15,9 @@
          subsequences/1,
          permutations/1,
 
+         fold/3,
+         foldr/3,
+
          concat/1,
          concat_map/2,
          and_/1,
@@ -87,6 +90,16 @@ permutations([El])          -> [[El]];
 permutations(List)          ->
     F = fun(El)-> [ [El|Rest] || Rest <- permutations(delete(El, List)) ] end,
     concat(lists:map(F,List)).
+
+-spec fold(fun((A,B) -> B), B, list(A)) -> list(B).
+fold(_,V,[])                            -> V;
+fold(F,V,[H|T]) when is_function(F,2)   -> F(H, fold(F,V,T));
+fold(_,_,_)                             -> error(badarg).
+
+%% @doc This is just an alias
+-spec foldr(fun((A,B) -> B), B, list(A)) -> list(B).
+foldr(F,V,L)                             -> fold(F,V,L).
+
 
 -spec filter(fun((A)->boolean()), list(A)) -> list(A).
 filter(F, Xs)                              ->
