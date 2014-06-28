@@ -17,6 +17,7 @@
 
          fold/3,
          foldr/3,
+         foldr1/2,
 
          concat/1,
          concat_map/2,
@@ -100,6 +101,11 @@ fold(_,_,_)                             -> error(badarg).
 -spec foldr(fun((A,B) -> B), B, list(A)) -> list(B).
 foldr(F,V,L)                             -> fold(F,V,L).
 
+
+-spec foldr1(fun((A,B) -> B), list(A)) -> list(B).
+foldr1(_,[])                           -> error(badarg);
+foldr1(_,[H|[]])                       -> H;
+foldr1(F,[H|T])                        -> F(H, foldr1(F, T)).
 
 -spec filter(fun((A)->boolean()), list(A)) -> list(A).
 filter(F, Xs)                              ->

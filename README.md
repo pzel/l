@@ -24,9 +24,15 @@ The following functions are implemented:
          subsequences/1,
          permutations/1,
 
+         foldr/3,
+         foldr1/2,
+
          concat/1,
          concat_map/2,
          and_/1,
+         or_/1,
+         any_/1,
+         all/2,
 
          replicate/2,
 
@@ -49,7 +55,7 @@ At this stage, no calls to the `lists:` module will be made. The idea is to
 bootstrap this library using only on its own functions.
 
 Unit tests and [proper](https://github.com/manopapad/proper) properties are
-written before the functions are actually implemented, but may not be complete.
+written before the functions are actually implemented, but may be incomplete.
 
 Code coverage doesn't drop below 100%.
 
