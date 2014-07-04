@@ -1,5 +1,7 @@
 l
 =
+[![Build
+Status](https://travis-ci.org/pzel/l.svg?branch=master)](https://travis-ci.org/pzel/l)
 
 Implementing Haskell's [Data.List](http://hackage.haskell.org/package/base-4.6.0.1/docs/Data-List.html) in Erlang.
 
