@@ -1,36 +1,37 @@
 -module(l).
--export([append/2,
-         head/1,
-         last/1,
-         tail/1,
-         init/1,
-         null/1,
-         length/1,
+-export([append/2
+        ,head/1
+        ,last/1
+        ,tail/1
+        ,init/1
+        ,null/1
+        ,length/1
 
-         map/2,
-         reverse/1,
-         intersperse/2,
-         intercalate/2,
-         transpose/1,
-         subsequences/1,
-         permutations/1,
+        ,map/2
+        ,reverse/1
+        ,intersperse/2
+        ,intercalate/2
+        ,transpose/1
+        ,subsequences/1
+        ,permutations/1
 
-         fold/3,
-         foldr/3,
-         foldr1/2,
+        ,fold/3
+        ,foldr/3
+        ,foldr/2  %% called foldr1 in Data.List
+        ,foldl/3
 
-         concat/1,
-         concat_map/2,
-         and_/1,
-         or_/1,
-         any/2,
-         all/2,
+        ,concat/1
+        ,concat_map/2
+        ,and_/1
+        ,or_/1
+        ,any/2
+        ,all/2
 
-         replicate/2,
+        ,replicate/2
 
-         filter/2,
+        ,filter/2
 
-         delete/2
+        ,delete/2
         ]).
 
 %% API
@@ -102,10 +103,15 @@ fold(_,_,_)                             -> error(badarg).
 foldr(F,V,L)                             -> fold(F,V,L).
 
 
--spec foldr1(fun((A,B) -> B), list(A)) -> list(B).
-foldr1(_,[])                           -> error(badarg);
-foldr1(_,[H|[]])                       -> H;
-foldr1(F,[H|T])                        -> F(H, foldr1(F, T)).
+-spec foldr(fun((A,B) -> B), list(A)) -> list(B).
+foldr(_,[])                           -> error(badarg);
+foldr(_,[H|[]])                       -> H;
+foldr(F,[H|T])                        -> F(H, foldr(F, T)).
+
+-spec foldl(fun((B,A) -> B), B, list(A)) -> B.
+foldl(_,V,[])                            -> V;
+foldl(F,V,[H|T]) when is_function(F,2)   -> foldl(F, F(V,H), T);
+foldl(_,_,_)                             -> error(badarg).
 
 -spec filter(fun((A)->boolean()), list(A)) -> list(A).
 filter(F, Xs)                              ->

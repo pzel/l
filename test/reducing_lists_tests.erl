@@ -35,20 +35,44 @@ prop_fold_is_foldr() ->
             l:foldr(F, V, Xs) == l:fold(F, V, Xs)).
 
 
-%% foldr1/2
+%% foldr/2
 
-foldr1_badarg_test() ->
+foldr2_badarg_test() ->
     F = fun(X,Y) -> X + Y end,
     ?assertError(badarg,
-                 l:foldr1(F, [])).
+                 l:foldr(F, [])).
 
-prop_foldr1_is_foldr_on_last_element() ->
+prop_foldr2_is_foldr_on_last_element() ->
     ?FORALL({F, List},
             {function([integer(), integer()], integer),
              non_empty(list(integer()))},
-            l:foldr1(F, List) == l:foldr(F,
+            l:foldr(F, List) == l:foldr(F,
                                          l:last(List),
                                          l:init(List))).
+
+%% foldl/3
+%% Welcome to the Twilight Zone.
+prop_foldl_in_terms_of_foldr() ->
+    ?FORALL({F, A, Bs},
+            {function([integer(), integer()], integer),
+             integer(),
+             non_empty(list(integer()))},
+            l:foldl(F, A, Bs) ==
+                (l:foldr(fun(B,G)-> fun(X)-> G(F(X,B)) end end,
+                         fun id/1,
+                         Bs))(A)
+           ).
+
+foldl_badarg1_test() ->
+    ?assertError(badarg,
+                 l:foldl(notfun, 1, [1,2,3])).
+foldl_badarg2_test() ->
+    ?assertError(badarg,
+                 l:foldl(fun combine/2, 1, notlist)).
+
+id(X) -> X.
+combine(X,Y) -> {X,Y}.
+
 %% Hutton[99] :
 %% A tutorial on the universality and expressiveness of fold
 %% GRAHAM HUTTON

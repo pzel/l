@@ -27,7 +27,8 @@ The following functions are implemented:
          permutations/1,
 
          foldr/3,
-         foldr1/2,
+         foldr/2,  (known as foldr1 in Data.List)
+         foldl/3,
 
          concat/1,
          concat_map/2,
