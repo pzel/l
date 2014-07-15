@@ -29,6 +29,7 @@ The following functions are implemented:
          foldr/3,
          foldr/2,  (known as foldr1 in Data.List)
          foldl/3,
+         foldl/2,  (known as foldl1 in Data.List)
 
          concat/1,
          concat_map/2,

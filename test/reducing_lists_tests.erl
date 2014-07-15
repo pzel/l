@@ -70,6 +70,17 @@ foldl_badarg2_test() ->
     ?assertError(badarg,
                  l:foldl(fun combine/2, 1, notlist)).
 
+%% foldl/2
+prop_foldl2_is_foldl_on_last_element() ->
+    ?FORALL({F, List},
+            {function([integer(), integer()], integer),
+             non_empty(list(integer()))},
+            l:foldl(F, List) == l:foldl(F,
+                                        l:last(List),
+                                        l:init(List))).
+
+
+
 id(X) -> X.
 combine(X,Y) -> {X,Y}.
 

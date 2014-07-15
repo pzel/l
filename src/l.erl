@@ -19,6 +19,7 @@
         ,foldr/3
         ,foldr/2  %% called foldr1 in Data.List
         ,foldl/3
+        ,foldl/2
 
         ,concat/1
         ,concat_map/2
@@ -102,8 +103,7 @@ fold(_,_,_)                             -> error(badarg).
 -spec foldr(fun((A,B) -> B), B, list(A)) -> list(B).
 foldr(F,V,L)                             -> fold(F,V,L).
 
-
--spec foldr(fun((A,B) -> B), list(A)) -> list(B).
+-spec foldr(fun((A,A) -> A), list(A)) -> list(A).
 foldr(_,[])                           -> error(badarg);
 foldr(_,[H|[]])                       -> H;
 foldr(F,[H|T])                        -> F(H, foldr(F, T)).
@@ -112,6 +112,12 @@ foldr(F,[H|T])                        -> F(H, foldr(F, T)).
 foldl(_,V,[])                            -> V;
 foldl(F,V,[H|T]) when is_function(F,2)   -> foldl(F, F(V,H), T);
 foldl(_,_,_)                             -> error(badarg).
+
+%% Dialyzer doesn't accept the following:
+-spec foldl(fun((_,_) -> A),[A,...]) -> A.
+foldl(_, [])                              -> error(badarg);
+foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
+foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
 
 -spec filter(fun((A)->boolean()), list(A)) -> list(A).
 filter(F, Xs)                              ->
