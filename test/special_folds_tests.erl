@@ -14,11 +14,9 @@ concat_two_test() ->
     ?assertEqual("ab", l:concat(["a", "b"])).
 concat_three_test() ->
     ?assertEqual("abc", l:concat(["a", "b", "c"])).
-
-%% @TODO:
-%% Add the property:
-%% forAll Xs = length(concat(Xs) == sum(map length Xs)
-%% we need the sum function for this
+prop_concat_lengths() ->
+    ?FORALL(Xs, list(non_empty(list(integer()))),
+            l:length(l:concat(Xs)) == l:sum(l:map(fun l:length/1, Xs))).
 
 %% concat_map/2
 concat_map_empty_test() ->
