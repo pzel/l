@@ -37,6 +37,7 @@ The following functions are implemented:
          or_/1,
          any_/1,
          all/2,
+         sum/1,
 
          replicate/2,
 

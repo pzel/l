@@ -66,7 +66,6 @@ prop_any_always_false() ->
     ?FORALL(Fs, non_empty(list(false)),
             false == l:any(fun is_true/1, Fs)).
 
-
 %% all/2
 all_badarg1_test() ->
     ?assertError(badarg, l:all(notfun, [])).
@@ -80,6 +79,19 @@ prop_all_always_false() ->
 prop_all_always_true() ->
     ?FORALL(Ts, list(true),
             true == l:all(fun is_true/1, Ts)).
+
+%% sum/1
+sum_badarg1_test() ->
+    ?assertError(badarith, l:sum([a,b,c])).
+sum_badarg2_test() ->
+    ?assertError(badarg, l:sum(not_a_list)).
+sum_null_list_test() ->
+    ?assertEqual(0, l:sum([])).
+prop_sum_singleton_equality() ->
+    ?FORALL(X, integer(), l:sum([X]) == X).
+prop_sum_recursive() ->
+    ?FORALL([X|Xs], non_empty(list(integer())),
+            X + l:sum(Xs) == l:sum([X|Xs])).
 
 repF(N)-> fun(X)-> l:replicate(N,X) end.
 is_true(X) -> X == true.

@@ -19,7 +19,7 @@
         ,foldr/3
         ,foldr/2  %% called foldr1 in Data.List
         ,foldl/3
-        ,foldl/2
+        ,foldl/2  %% called foldl1 in Data.List
 
         ,concat/1
         ,concat_map/2
@@ -27,6 +27,7 @@
         ,or_/1
         ,any/2
         ,all/2
+        ,sum/1
 
         ,replicate/2
 
@@ -92,18 +93,18 @@ permutations([])            -> [[]];
 permutations([El])          -> [[El]];
 permutations(List)          ->
     F = fun(El)-> [ [El|Rest] || Rest <- permutations(delete(El, List)) ] end,
-    concat(lists:map(F,List)).
+    concat(map(F,List)).
 
--spec fold(fun((A,B) -> B), B, list(A)) -> list(B).
+-spec fold(fun((A,B) -> B), B, list(A)) -> B.
 fold(_,V,[])                            -> V;
 fold(F,V,[H|T]) when is_function(F,2)   -> F(H, fold(F,V,T));
 fold(_,_,_)                             -> error(badarg).
 
 %% @doc This is just an alias
--spec foldr(fun((A,B) -> B), B, list(A)) -> list(B).
+-spec foldr(fun((A,B) -> B), B, list(A)) -> B.
 foldr(F,V,L)                             -> fold(F,V,L).
 
--spec foldr(fun((A,A) -> A), list(A)) -> list(A).
+-spec foldr(fun((A,A) -> A), list(A)) -> A.
 foldr(_,[])                           -> error(badarg);
 foldr(_,[H|[]])                       -> H;
 foldr(F,[H|T])                        -> F(H, foldr(F, T)).
@@ -113,8 +114,7 @@ foldl(_,V,[])                            -> V;
 foldl(F,V,[H|T]) when is_function(F,2)   -> foldl(F, F(V,H), T);
 foldl(_,_,_)                             -> error(badarg).
 
-%% Dialyzer doesn't accept the following:
--spec foldl(fun((_,_) -> A),[A,...]) -> A.
+-spec foldl(fun((_,_) -> A),[A,...])      -> A.
 foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
@@ -163,6 +163,11 @@ all(F,[])    when is_function(F,1)      -> true;
 all(F,[H|T]) when is_function(F,1)      ->
     F(H) andalso all(F, T);
 all(_,_)                                -> error(badarg).
+
+%% @doc Dialyzer has a problem with the type:
+%% -spec sum(list(number())) -> number().
+-spec sum(list(A)) -> A.
+sum(L)             -> fold(fun erlang:'+'/2, 0, L).
 
 -spec replicate(non_neg_integer(), A) -> list(A).
 replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
