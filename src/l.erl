@@ -28,6 +28,7 @@
         ,any/2
         ,all/2
         ,sum/1
+        ,product/1
 
         ,replicate/2
 
@@ -164,10 +165,13 @@ all(F,[H|T]) when is_function(F,1)      ->
     F(H) andalso all(F, T);
 all(_,_)                                -> error(badarg).
 
-%% @doc Dialyzer has a problem with the type:
 %% -spec sum(list(number())) -> number().
 -spec sum(list(A)) -> A.
 sum(L)             -> fold(fun erlang:'+'/2, 0, L).
+
+-spec product(list(A)) -> A.
+product(L)         -> fold(fun erlang:'*'/2, 1, L).
+
 
 -spec replicate(non_neg_integer(), A) -> list(A).
 replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);

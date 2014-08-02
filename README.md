@@ -38,6 +38,7 @@ The following functions are implemented:
          any_/1,
          all/2,
          sum/1,
+         product/1,
 
          replicate/2,
 

@@ -91,5 +91,18 @@ prop_sum_recursive() ->
     ?FORALL([X|Xs], non_empty(list(integer())),
             X + l:sum(Xs) == l:sum([X|Xs])).
 
+%% product/1
+product_badarg1_test() ->
+    ?assertError(badarith, l:product([a,b,c])).
+product_badarg2_test() ->
+    ?assertError(badarg, l:product(not_a_list)).
+prop_product_singleton_equality() ->
+    ?FORALL(X, integer(), l:product([X]) == X).
+prop_product_recursive() ->
+    ?FORALL([X|Xs], non_empty(list(integer())),
+            X * l:product(Xs) == l:product([X|Xs])).
+
+
+
 repF(N)-> fun(X)-> l:replicate(N,X) end.
 is_true(X) -> X == true.
