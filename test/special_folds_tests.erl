@@ -102,7 +102,30 @@ prop_product_recursive() ->
     ?FORALL([X|Xs], non_empty(list(integer())),
             X * l:product(Xs) == l:product([X|Xs])).
 
-
+%% maximum/1
+maximum_badarg1_test() ->
+    ?assertError(badarg, l:maximum(not_a_list)).
+maximum_badarg2_test() ->
+    ?assertError(badarg, l:maximum([])).
+prop_maximum_singleton_equality() ->
+    ?FORALL(X, integer(),
+            X == l:maximum([X])).
+prop_maximum_is_biggest_int() ->
+    ?FORALL(X, integer(-1000,1000),
+            ?FORALL(Xs, list(integer(-1000,X)),
+                    X == l:maximum(Xs ++ [X]))).
+%% minimum/1
+minimum_badarg1_test() ->
+    ?assertError(badarg, l:minimum(not_a_list)).
+minimum_badarg2_test() ->
+    ?assertError(badarg, l:minimum([])).
+prop_minimum_singleton_equality() ->
+    ?FORALL(X, integer(),
+            X == l:minimum([X])).
+prop_minimum_is_smallest_int() ->
+    ?FORALL(X, integer(-1000,1000),
+            ?FORALL(Xs, list(integer(X,1000)),
+                    X == l:minimum(Xs ++ [X]))).
 
 repF(N)-> fun(X)-> l:replicate(N,X) end.
 is_true(X) -> X == true.

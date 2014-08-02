@@ -39,6 +39,8 @@ The following functions are implemented:
          all/2,
          sum/1,
          product/1,
+         maximum/1,
+         minimum/1,
 
          replicate/2,
 
