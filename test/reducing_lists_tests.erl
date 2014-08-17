@@ -66,11 +66,16 @@ prop_foldl_in_terms_of_foldr() ->
 foldl_badarg1_test() ->
     ?assertError(badarg,
                  l:foldl(notfun, 1, [1,2,3])).
+
 foldl_badarg2_test() ->
     ?assertError(badarg,
                  l:foldl(fun combine/2, 1, notlist)).
 
 %% foldl/2
+foldl2_badarg_test() ->
+    ?assertError(badarg,
+                 l:foldl(fun combine/2, [])).
+
 prop_foldl2_is_foldl_on_last_element() ->
     ?FORALL({F, List},
             {function([integer(), integer()], integer),
@@ -78,8 +83,6 @@ prop_foldl2_is_foldl_on_last_element() ->
             l:foldl(F, List) == l:foldl(F,
                                         l:last(List),
                                         l:init(List))).
-
-
 
 id(X) -> X.
 combine(X,Y) -> {X,Y}.
