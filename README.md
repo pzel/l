@@ -44,6 +44,9 @@ The following functions are implemented:
 
          replicate/2,
 
+         take/2,
+         drop/2,
+
          filter/2,
 
          delete/2

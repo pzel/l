@@ -34,6 +34,9 @@
 
         ,replicate/2
 
+        ,take/2
+        ,drop/2
+
         ,filter/2
 
         ,delete/2
@@ -189,3 +192,15 @@ replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 -spec replicate(non_neg_integer(), T, list(T)) -> list(T).
 replicate(0,_,Acc) -> Acc;
 replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).
+
+-spec take(non_neg_integer(), list(T)) -> list(T).
+take(N, L)                             -> take(N, L, []).
+
+take(_, [], Acc)                       -> reverse(Acc);
+take(0, _, Acc)                        -> reverse(Acc);
+take(N, [H|T], Acc)                    -> take(N-1, T, [H|Acc]).
+
+-spec drop(non_neg_integer(), list(T)) -> list(T).
+drop(N, L) when(N<1)                   -> L;
+drop(_, [])                            -> [];
+drop(N, [_|T])                         -> drop(N-1, T).
