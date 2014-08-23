@@ -36,6 +36,7 @@
 
         ,take/2
         ,drop/2
+        ,split_at/2
 
         ,filter/2
 
@@ -193,14 +194,35 @@ replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 replicate(0,_,Acc) -> Acc;
 replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).
 
--spec take(non_neg_integer(), list(T)) -> list(T).
-take(N, L)                             -> take(N, L, []).
+-spec take(integer(), list(T))  -> list(T).
+take(N, L) when
+      is_integer(N), is_list(L) -> take(N, L, []);
+take(_,_)                       -> error(badarg).
 
-take(_, [], Acc)                       -> reverse(Acc);
-take(0, _, Acc)                        -> reverse(Acc);
-take(N, [H|T], Acc)                    -> take(N-1, T, [H|Acc]).
+%% @doc internal
+-spec take(integer(), list(T), list(T)) -> list(T).
+take(_, [], Acc)                        -> reverse(Acc);
+take(0, _, Acc)                         -> reverse(Acc);
+take(N, [H|T], Acc)                     -> take(N-1, T, [H|Acc]).
 
--spec drop(non_neg_integer(), list(T)) -> list(T).
-drop(N, L) when(N<1)                   -> L;
-drop(_, [])                            -> [];
-drop(N, [_|T])                         -> drop(N-1, T).
+-spec drop(integer(), list(T))  -> list(T).
+drop(N, L) when
+      is_integer(N), is_list(L) -> drop_(N, L);
+drop(_, _)                      -> error(badarg).
+
+-spec drop_(integer(), list(T)) -> list(T).
+drop_(N, L) when(N<1)           -> L;
+drop_(_, [])                    -> [];
+drop_(N, [_|T])                 -> drop(N-1, T).
+
+-spec split_at(integer(), list()) -> {list(), list()}.
+split_at(N, L) when
+      is_integer(N), is_list(L)   -> split_at(N, L, {[], []});
+split_at(_,_)                     -> error(badarg).
+
+%% @doc internal
+-spec split_at(integer(), list(), {list(), list()}) -> {list(), list()}.
+split_at(N, L, _) when N < 0                        -> {[], L};
+split_at(0, L, {Pre, []})                           -> {reverse(Pre), L};
+split_at(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
+split_at(N, [H|T], {Pre, []})                       -> split_at(N-1, T, {[H|Pre], []}).

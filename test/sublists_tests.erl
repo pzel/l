@@ -4,31 +4,18 @@
 %% take/2
 %%
 
-take_hello_world_test() ->
-    ?assertEqual("Hello",
-                 l:take(5, "Hello, World!")).
+take_test_() ->
+    [?_assertEqual("Hello", l:take(5, "Hello, World!")),
+     ?_assertEqual([1,2,3], l:take(3, [1,2,3,4,5])),
+     ?_assertEqual([1,2],   l:take(3, [1,2])),
+     ?_assertEqual([],      l:take(3, [])),
+     ?_assertEqual([],      l:take(-1, [])),
+     ?_assertEqual([],      l:take(0, [1,3])),
+     ?_assertError(badarg,  l:take(foo, [1,2,3])),
+     ?_assertError(badarg,  l:take(3, celestial_birds))
+    ].
 
-take_sublist_test() ->
-    ?assertEqual([1,2,3],
-                 l:take(3, [1,2,3,4,5])).
-
-take_with_more_than_length_test() ->
-    ?assertEqual([1,2],
-                 l:take(3, [1,2])).
-
-take_any_with_empty_list_test() ->
-    ?assertEqual([],
-                 l:take(3, [])).
-
-take_negative_test() ->
-    ?assertEqual([],
-                 l:take(-1, [])).
-
-take_zero_test() ->
-    ?assertEqual([],
-                 l:take(0, [1,3])).
-
-prop_identity() ->
+prop_take_identity() ->
     ?FORALL(L, list(),
             ?FORALL(N, choose(length(L), inf),
                 l:take(N, L) == L)).
@@ -41,19 +28,27 @@ prop_take_as_reverse_drop() ->
                                          l:reverse(L))))).
 
 %% drop/2
-drop_hello_world_test() ->
-    ?assertEqual("World!",
-                 l:drop(6, "Hello World!")).
+drop_test_() ->
+    [?_assertEqual("World!", l:drop(6, "Hello World!")),
+     ?_assertEqual([],       l:drop(3, [1,2])),
+     ?_assertEqual([],       l:drop(3, [])),
+     ?_assertEqual([1,2],    l:drop(-1, [1,2])),
+     ?_assertError(badarg,   l:drop(foo, [1,2,3])),
+     ?_assertError(badarg,   l:drop(7, diamonds))
+    ].
 
-drop_more_than_test() ->
-    ?assertEqual([],
-                 l:drop(3, [1,2])).
 
-drop_more_from_empty_test() ->
-    ?assertEqual([],
-                 l:drop(3, [])).
 
-drop_negative_test() ->
-    ?assertEqual([1,2],
-                 l:drop(-1, [1,2])).
+%% split_at/2
+split_at_test_() ->
+    [?_assertEqual({"Hello ","World!"}, l:split_at(6,"Hello World!")),
+     ?_assertEqual({[1,2,3],[4,5]},     l:split_at(3, [1,2,3,4,5])),
+     ?_assertEqual({[1],[2,3]},         l:split_at(1, [1,2,3])),
+     ?_assertEqual({[1,2,3],[]},        l:split_at(3, [1,2,3])),
+     ?_assertEqual({[1,2,3],[]},        l:split_at(4, [1,2,3])),
+     ?_assertEqual({[],[1,2,3]},        l:split_at(0, [1,2,3])),
+     ?_assertEqual({[],[1,2,3]},        l:split_at(-1, [1,2,3])),
+     ?_assertError(badarg,              l:split_at(goo, [1,2,3])),
+     ?_assertError(badarg,              l:split_at(1, partridge_in_a_pear_tree))
+    ].
 
