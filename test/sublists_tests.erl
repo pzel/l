@@ -52,3 +52,12 @@ split_at_test_() ->
      ?_assertError(badarg,              l:split_at(1, partridge_in_a_pear_tree))
     ].
 
+%% take_while/2
+take_while_test_() ->
+    Lt = fun(N)-> fun(X)-> X < N end end,
+    [?_assertEqual([1,2],   l:take_while(Lt(3), [1,2,3,4,1,2,3,4])),
+     ?_assertEqual([1,2,3], l:take_while(Lt(9), [1,2,3])),
+     ?_assertEqual([],      l:take_while(Lt(0), [1,2,3])),
+     ?_assertError(badarg,  l:take_while(cello, [1,2,3])),
+     ?_assertError(badarg,  l:take_while(Lt(3), cliffs_of_dover))
+    ].

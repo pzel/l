@@ -37,6 +37,7 @@
         ,take/2
         ,drop/2
         ,split_at/2
+        ,take_while/2
 
         ,filter/2
 
@@ -226,3 +227,15 @@ split_at(N, L, _) when N < 0                        -> {[], L};
 split_at(0, L, {Pre, []})                           -> {reverse(Pre), L};
 split_at(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
 split_at(N, [H|T], {Pre, []})                       -> split_at(N-1, T, {[H|Pre], []}).
+
+-spec take_while(fun((A)->boolean()), list(A)) -> list(A).
+take_while(P, L) when
+      is_function(P, 1), is_list(L)            -> take_while(P, L, []);
+take_while(_, _)                               -> error(badarg).
+
+%% @doc internal
+take_while(_, [], Acc) -> reverse(Acc);
+take_while(P, [H|T], Acc) ->
+    case P(H) of true -> take_while(P, T, [H|Acc]);
+                false -> reverse(Acc)
+    end.
