@@ -48,6 +48,7 @@ The following functions are implemented:
          drop/2,
          split_at/2,
          take_while/2,
+         drop_while/2,
 
          filter/2,
 

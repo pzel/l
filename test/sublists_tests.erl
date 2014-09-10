@@ -38,7 +38,6 @@ drop_test_() ->
     ].
 
 
-
 %% split_at/2
 split_at_test_() ->
     [?_assertEqual({"Hello ","World!"}, l:split_at(6,"Hello World!")),
@@ -66,3 +65,14 @@ take_while_test_() ->
      ?_assertError(badarg,  l:take_while(cello, [1,2,3])),
      ?_assertError(badarg,  l:take_while(Lt(3), cliffs_of_dover))
     ].
+
+%% drop_while/2
+drop_while_test_() ->
+    Lt = fun(N)-> fun(X)-> X < N end end,
+    [?_assertEqual([3,4,5,1,2,3],  l:drop_while(Lt(3), [1,2,3,4,5,1,2,3])),
+     ?_assertEqual([],             l:drop_while(Lt(9), [1,2,3])),
+     ?_assertEqual([1,2,3],        l:drop_while(Lt(0), [1,2,3])),
+     ?_assertError(badarg,         l:drop_while(eating, [1,2,3])),
+     ?_assertError(badarg,         l:drop_while(Lt(1), fun()->foo end))
+    ].
+

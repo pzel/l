@@ -38,6 +38,7 @@
         ,drop/2
         ,split_at/2
         ,take_while/2
+        ,drop_while/2
 
         ,filter/2
 
@@ -45,6 +46,8 @@
         ]).
 
 %% API
+
+-define(pred(T), fun((T)->boolean())).
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -59,7 +62,7 @@ last(L)             -> l:head(l:reverse(L)).
 tail(L)              -> erlang:tl(L).
 
 -spec init(list(A)) -> list(A) | none().
-init(L)             -> reverse(tail(reverse(L))).
+init(L)             -> l:reverse(l:tail(l:reverse(L))).
 
 -spec null(list()) -> boolean().
 null([])           -> true;
@@ -127,9 +130,8 @@ foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
 
--spec filter(fun((A)->boolean()), list(A)) -> list(A).
-filter(F, Xs)                              ->
-    [ X || X <- Xs, F(X) == true ].
+-spec filter(?pred(A), list(A)) -> list(A).
+filter(F, Xs)                   -> [ X || X <- Xs, F(X) == true ].
 
 -spec delete(A, list(A)) -> list(A).
 delete(X,Xs)             -> delete(X,Xs,[]).
@@ -160,17 +162,17 @@ or_([true|_])              -> true;
 or_([false|Rest])          -> or_(Rest);
 or_(_)                     -> error(badarg).
 
--spec any(fun((A)->boolean()), list(A)) -> boolean().
-any(F,[])    when is_function(F,1)      -> false;
-any(F,[H|T]) when is_function(F,1)      ->
+-spec any(?pred(A), list(A))       -> boolean().
+any(F,[])    when is_function(F,1) -> false;
+any(F,[H|T]) when is_function(F,1) ->
     F(H) orelse any(F, T);
-any(_,_)                                -> error(badarg).
+any(_,_)                           -> error(badarg).
 
--spec all(fun((A)->boolean()), list(A)) -> boolean().
-all(F,[])    when is_function(F,1)      -> true;
-all(F,[H|T]) when is_function(F,1)      ->
+-spec all(?pred(A), list(A))       -> boolean().
+all(F,[])    when is_function(F,1) -> true;
+all(F,[H|T]) when is_function(F,1) ->
     F(H) andalso all(F, T);
-all(_,_)                                -> error(badarg).
+all(_,_)                           -> error(badarg).
 
 -spec sum(list(A)) -> A.
 sum(L)             -> fold(fun erlang:'+'/2, 0, L).
@@ -212,7 +214,7 @@ drop(N, L) when
 drop(_, _)                      -> error(badarg).
 
 -spec drop_(integer(), list(T)) -> list(T).
-drop_(N, L) when(N<1)           -> L;
+drop_(N, L) when (N<1)          -> L;
 drop_(_, [])                    -> [];
 drop_(N, [_|T])                 -> drop(N-1, T).
 
@@ -228,14 +230,26 @@ split_at(0, L, {Pre, []})                           -> {reverse(Pre), L};
 split_at(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
 split_at(N, [H|T], {Pre, []})                       -> split_at(N-1, T, {[H|Pre], []}).
 
--spec take_while(fun((A)->boolean()), list(A)) -> list(A).
+-spec take_while(?pred(A), list(A)) -> list(A).
 take_while(P, L) when
-      is_function(P, 1), is_list(L)            -> take_while(P, L, []);
-take_while(_, _)                               -> error(badarg).
+      is_function(P, 1), is_list(L) -> take_while(P, L, []);
+take_while(_, _)                    -> error(badarg).
 
 %% @doc internal
 take_while(_, [], Acc) -> reverse(Acc);
 take_while(P, [H|T], Acc) ->
     case P(H) of true -> take_while(P, T, [H|Acc]);
                 false -> reverse(Acc)
+    end.
+
+-spec drop_while(?pred(A), list(A)) -> list(A).
+drop_while(P, L) when
+      is_function(P), is_list(L)               -> drop_while_(P, L);
+drop_while(_,_)                                -> error(badarg).
+
+%% @doc internal
+drop_while_(_, []) -> [];
+drop_while_(P, [H|T]) ->
+    case P(H) of true -> drop_while_(P, T);
+                 false -> [H|T]
     end.
