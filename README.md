@@ -80,7 +80,7 @@ At this stage, the module should be verfifed correct to a great
 extent. The source will be annotated, and generated documentation available.
 
 
-###0.3 – Computational complexity reduction
+###0.3 – Optimization
 
 This version will make the code more suitable for production by optimizing
 computationally wasteful implementations. Calls to `lists:` functions may appear
