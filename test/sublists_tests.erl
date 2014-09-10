@@ -52,6 +52,11 @@ split_at_test_() ->
      ?_assertError(badarg,              l:split_at(1, partridge_in_a_pear_tree))
     ].
 
+prop_split_at_is_take_and_drop() ->
+    ?FORALL(L, non_empty(list()),
+            ?FORALL(N, choose(0, length(L)),
+                    l:split_at(N, L) == {l:take(N,L), l:drop(N,L)})).
+
 %% take_while/2
 take_while_test_() ->
     Lt = fun(N)-> fun(X)-> X < N end end,
