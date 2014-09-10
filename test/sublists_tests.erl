@@ -75,4 +75,3 @@ drop_while_test_() ->
      ?_assertError(badarg,         l:drop_while(eating, [1,2,3])),
      ?_assertError(badarg,         l:drop_while(Lt(1), fun()->foo end))
     ].
-

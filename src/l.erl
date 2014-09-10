@@ -220,7 +220,6 @@ split_at(N, L) when
       is_integer(N), is_list(L)   -> split_at_(N, L, {[], []});
 split_at(_,_)                     -> error(badarg).
 
-
 -spec split_at_(integer(), list(), {list(), list()}) -> {list(), list()}.
 split_at_(N, L, _) when N < 0                        -> {[], L};
 split_at_(0, L, {Pre, []})                           -> {reverse(Pre), L};

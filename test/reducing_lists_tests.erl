@@ -53,28 +53,25 @@ prop_foldr2_is_foldr_on_last_element() ->
 %% foldl/3
 %% Welcome to the Twilight Zone.
 prop_foldl_in_terms_of_foldr() ->
+    Id = fun(X)-> X end,
     ?FORALL({F, A, Bs},
             {function([integer(), integer()], integer),
              integer(),
              non_empty(list(integer()))},
             l:foldl(F, A, Bs) ==
                 (l:foldr(fun(B,G)-> fun(X)-> G(F(X,B)) end end,
-                         fun id/1,
+                         Id,
                          Bs))(A)
            ).
 
-foldl_badarg1_test() ->
-    ?assertError(badarg,
-                 l:foldl(notfun, 1, [1,2,3])).
-
-foldl_badarg2_test() ->
-    ?assertError(badarg,
-                 l:foldl(fun combine/2, 1, notlist)).
+foldl_test_() ->
+    [?_assertError(badarg, l:foldl(notfun, 1, [1,2,3])),
+     ?_assertError(badarg, l:foldl(fun(A,B)-> {A,B} end, 1, notlist))
+     ].
 
 %% foldl/2
-foldl2_badarg_test() ->
-    ?assertError(badarg,
-                 l:foldl(fun combine/2, [])).
+foldl2__test_() ->
+    [?_assertError(badarg, l:foldl(fun(A,B)-> {A,B} end, []))].
 
 prop_foldl2_is_foldl_on_last_element() ->
     ?FORALL({F, List},
@@ -83,9 +80,6 @@ prop_foldl2_is_foldl_on_last_element() ->
             l:foldl(F, List) == l:foldl(F,
                                         l:last(List),
                                         l:init(List))).
-
-id(X) -> X.
-combine(X,Y) -> {X,Y}.
 
 %% Hutton[99] :
 %% A tutorial on the universality and expressiveness of fold

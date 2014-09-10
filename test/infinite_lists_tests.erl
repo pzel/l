@@ -6,24 +6,16 @@
 %%
 
 %% replicate/2
-replicate_neg_test() ->
-    ?assertError(badarg, l:replicate(-1, a)).
-replicate_0_test() ->
-    ?assertEqual([], l:replicate(0, a)).
+replicate_test_() ->
+    [?_assertError(badarg, l:replicate(-1, a)),
+     ?_assertEqual([], l:replicate(0, a))
+     ].
 prop_replicate_identity() ->
      ?FORALL({N, X}, {non_neg_integer(), term()},
-             all(eqF(X), l:replicate(N,X))).
+             l:all(eqF(X), l:replicate(N,X))).
 prop_replicate_length() ->
      ?FORALL({N, X}, {non_neg_integer(), term()},
              N == length(l:replicate(N,X))).
-
-
-
-%% @TODO:
-%% replace this all with l:all when implemented
-all(P,Xs) when is_function(P,1) ->
-    Satisfied = [ X || X <- Xs, P(X) ],
-    length(Xs) == length(Satisfied).
 
 eqF(P)->
     fun(Q)-> P =:= Q end.

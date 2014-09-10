@@ -7,10 +7,11 @@
 
 
 %% filter/2
-filter_empty_true_test() ->
-    ?assertEqual([], l:filter(fun t/1, [])).
-filter_empty_false_test() ->
-    ?assertEqual([], l:filter(fun f/1, [])).
+filter_test_() ->
+    [?_assertEqual([], l:filter(fun t/1, [])),
+     ?_assertEqual([], l:filter(fun f/1, []))
+    ].
+
 prop_const_true_is_id() ->
     ?FORALL(Xs, list(integer()),
             l:filter(fun t/1, Xs) == Xs).
