@@ -23,8 +23,8 @@
 
         ,concat/1
         ,concat_map/2
-        ,and_/1
-        ,or_/1
+        ,'and'/1
+        ,'or'/1
         ,any/2
         ,all/2
         ,sum/1
@@ -134,12 +134,12 @@ foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
 filter(F, Xs)                   -> [ X || X <- Xs, F(X) == true ].
 
 -spec delete(A, list(A)) -> list(A).
-delete(X,Xs)             -> deleteW(X,Xs,[]).
+delete(X,Xs)             -> delete_(X,Xs,[]).
 
--spec deleteW(A, list(A), list(A)) -> list(A).
-deleteW(X,[X|T],Acc)               -> append(reverse(Acc), T);
-deleteW(X,[Y|T],Acc)               -> deleteW(X, T, [Y|Acc]);
-deleteW(_,[],Acc)                  -> reverse(Acc).
+-spec delete_(A, list(A), list(A)) -> list(A).
+delete_(X,[X|T],Acc)               -> append(reverse(Acc), T);
+delete_(X,[Y|T],Acc)               -> delete_(X, T, [Y|Acc]);
+delete_(_,[],Acc)                  -> reverse(Acc).
 
 -spec concat(list(list(A))) -> list(A).
 concat([])                  -> [];
@@ -149,17 +149,17 @@ concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS)).
 -spec concat_map(fun((A) -> list(B)), list(A)) -> list(B).
 concat_map(F, L) when is_function(F) -> concat(map(F, L)).
 
--spec and_(list(boolean())) -> boolean().
-and_([])                    -> true;
-and_([false|_])             -> false;
-and_([true|Rest])           -> and_(Rest);
-and_(_)                     -> error(badarg).
+-spec 'and'(list(boolean())) -> boolean().
+'and'([])                    -> true;
+'and'([false|_])             -> false;
+'and'([true|Rest])           -> 'and'(Rest);
+'and'(_)                     -> error(badarg).
 
--spec or_(list(boolean())) -> boolean().
-or_([])                    -> false;
-or_([true|_])              -> true;
-or_([false|Rest])          -> or_(Rest);
-or_(_)                     -> error(badarg).
+-spec 'or'(list(boolean())) -> boolean().
+'or'([])                    -> false;
+'or'([true|_])              -> true;
+'or'([false|Rest])          -> 'or'(Rest);
+'or'(_)                     -> error(badarg).
 
 -spec any(?pred(A), list(A))       -> boolean().
 any(F,[])    when is_function(F,1) -> false;
@@ -188,65 +188,65 @@ minimum(L) when is_list(L) -> foldr(fun erlang:min/2, L);
 minimum(_)                 -> error(badarg).
 
 -spec replicate(non_neg_integer(), A) -> list(A).
-replicate(N,X) when is_integer(N), N>=0 -> replicateW(N,X,[]);
+replicate(N,X) when is_integer(N), N>=0 -> replicate_(N,X,[]);
 replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 
--spec replicateW(non_neg_integer(), T, list(T)) -> list(T).
-replicateW(0,_,Acc)                             -> Acc;
-replicateW(N,X,Acc)                             -> replicateW(N-1,X,[X|Acc]).
+-spec replicate_(non_neg_integer(), T, list(T)) -> list(T).
+replicate_(0,_,Acc)                             -> Acc;
+replicate_(N,X,Acc)                             -> replicate_(N-1,X,[X|Acc]).
 
 -spec take(integer(), list(T))  -> list(T).
 take(N, L) when
-      is_integer(N), is_list(L) -> takeW(N, L, []);
+      is_integer(N), is_list(L) -> take_(N, L, []);
 take(_,_)                       -> error(badarg).
 
--spec takeW(integer(), list(T), list(T)) -> list(T).
-takeW(_, [], Acc)                        -> reverse(Acc);
-takeW(0, _, Acc)                         -> reverse(Acc);
-takeW(N, [H|T], Acc)                     -> takeW(N-1, T, [H|Acc]).
+-spec take_(integer(), list(T), list(T)) -> list(T).
+take_(_, [], Acc)                        -> reverse(Acc);
+take_(0, _, Acc)                         -> reverse(Acc);
+take_(N, [H|T], Acc)                     -> take_(N-1, T, [H|Acc]).
 
 -spec drop(integer(), list(T))  -> list(T).
 drop(N, L) when
-      is_integer(N), is_list(L) -> dropW(N, L);
+      is_integer(N), is_list(L) -> drop_(N, L);
 drop(_, _)                      -> error(badarg).
 
--spec dropW(integer(), list(T)) -> list(T).
-dropW(N, L) when (N<1)          -> L;
-dropW(_, [])                    -> [];
-dropW(N, [_|T])                 -> dropW(N-1, T).
+-spec drop_(integer(), list(T)) -> list(T).
+drop_(N, L) when (N<1)          -> L;
+drop_(_, [])                    -> [];
+drop_(N, [_|T])                 -> drop_(N-1, T).
 
 -spec split_at(integer(), list()) -> {list(), list()}.
 split_at(N, L) when
-      is_integer(N), is_list(L)   -> split_atW(N, L, {[], []});
+      is_integer(N), is_list(L)   -> split_at_(N, L, {[], []});
 split_at(_,_)                     -> error(badarg).
 
 
--spec split_atW(integer(), list(), {list(), list()}) -> {list(), list()}.
-split_atW(N, L, _) when N < 0                        -> {[], L};
-split_atW(0, L, {Pre, []})                           -> {reverse(Pre), L};
-split_atW(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
-split_atW(N, [H|T], {Pre, []})                       -> split_atW(N-1, T, {[H|Pre], []}).
+-spec split_at_(integer(), list(), {list(), list()}) -> {list(), list()}.
+split_at_(N, L, _) when N < 0                        -> {[], L};
+split_at_(0, L, {Pre, []})                           -> {reverse(Pre), L};
+split_at_(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
+split_at_(N, [H|T], {Pre, []})                       -> split_at_(N-1, T, {[H|Pre], []}).
 
 -spec take_while(?pred(A), list(A)) -> list(A).
 take_while(P, L) when
-      is_function(P, 1), is_list(L) -> take_whileW(P, L, []);
+      is_function(P, 1), is_list(L) -> take_while_(P, L, []);
 take_while(_, _)                    -> error(badarg).
 
--spec take_whileW(?pred(A), list(A), list(A)) -> list(A).
-take_whileW(_, [], Acc)                       -> reverse(Acc);
-take_whileW(P, [H|T], Acc) ->
-    case P(H) of true -> take_whileW(P, T, [H|Acc]);
+-spec take_while_(?pred(A), list(A), list(A)) -> list(A).
+take_while_(_, [], Acc)                       -> reverse(Acc);
+take_while_(P, [H|T], Acc) ->
+    case P(H) of true -> take_while_(P, T, [H|Acc]);
                 false -> reverse(Acc)
     end.
 
 -spec drop_while(?pred(A), list(A)) -> list(A).
 drop_while(P, L) when
-      is_function(P), is_list(L)    -> drop_whileW(P, L);
+      is_function(P), is_list(L)    -> drop_while_(P, L);
 drop_while(_,_)                     -> error(badarg).
 
--spec drop_whileW(?pred(A), list(A)) -> list(A).
-drop_whileW(_, [])                   -> [];
-drop_whileW(P, [H|T]) ->
-    case P(H) of true -> drop_whileW(P, T);
+-spec drop_while_(?pred(A), list(A)) -> list(A).
+drop_while_(_, [])                   -> [];
+drop_while_(P, [H|T]) ->
+    case P(H) of true -> drop_while_(P, T);
                  false -> [H|T]
     end.

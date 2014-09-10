@@ -30,25 +30,25 @@ prop_concat_map_length() ->
 
 %% and/1
 and_badarg_test() ->
-    ?assertError(badarg, l:and_([hello, 1, {}])).
+    ?assertError(badarg, l:'and'([hello, 1, {}])).
 and_empty_test() ->
-    ?assertEqual(true, l:and_([])).
+    ?assertEqual(true, l:'and'([])).
 prop_and_all_true() ->
-    ?FORALL(Xs, list(true), true == l:and_(Xs)).
+    ?FORALL(Xs, list(true), true == l:'and'(Xs)).
 prop_and_at_least_one_false() ->
     ?FORALL({Ts,Fs}, {list(true), non_empty(list(false))},
-            false == l:and_(l:append(Ts,Fs))).
+            false == l:'and'(l:append(Ts,Fs))).
 
 %% or/1
 or_badarg_test() ->
-    ?assertError(badarg, l:or_([hello, 1, {}])).
+    ?assertError(badarg, l:'or'([hello, 1, {}])).
 or_empty_test() ->
-    ?assertEqual(false, l:or_([])).
+    ?assertEqual(false, l:'or'([])).
 prop_or_all_false() ->
-    ?FORALL(Xs, list(false), false == l:or_(Xs)).
+    ?FORALL(Xs, list(false), false == l:'or'(Xs)).
 prop_or_at_least_one_true() ->
     ?FORALL({Fs,Ts}, {list(false), non_empty(list(true))},
-            true == l:or_(l:append(Ts,Fs))).
+            true == l:'or'(l:append(Ts,Fs))).
 
 %% any/2
 any_badarg1_test() ->

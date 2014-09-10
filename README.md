@@ -33,8 +33,8 @@ The following functions are implemented:
 
          concat/1,
          concat_map/2,
-         and_/1,
-         or_/1,
+         'and'/1,
+         'or'/1,
          any_/1,
          all/2,
          sum/1,
