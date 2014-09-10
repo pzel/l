@@ -75,3 +75,48 @@ drop_while_test_() ->
      ?_assertError(badarg,         l:drop_while(eating, [1,2,3])),
      ?_assertError(badarg,         l:drop_while(Lt(1), fun()->foo end))
     ].
+
+%% drop_while_end/2
+drop_while_end_test_() ->
+    IsSpace = fun(X)-> X == $  end,
+    [?_assertEqual("foo",     l:drop_while_end(IsSpace, "foo ")),
+     ?_assertEqual("foo bar", l:drop_while_end(IsSpace, "foo bar")),
+     ?_assertError(badarg,    l:drop_while_end(black, [1,2,3])),
+     ?_assertError(badarg,    l:drop_while_end(IsSpace, fun()->white end))
+    ].
+drop_while_end_evaluation_test() ->
+    %% This verifies  the semantic check present in the
+    %% "foo\n" ++ undefined == "foo" ++ undefined scenario.
+    %% We want to inspect each value only once, and NOT reverse the list
+    Sink = spawn_sink(),
+    IsSpace = fun(X)-> X == $  end,
+    IsSpaceEval = make_effectful_fun(Sink,IsSpace),
+
+    ?assertThrow(eval_fail, l:drop_while_end(IsSpaceEval, "foo "++[bottom])),
+    ?assertEqual([{$f, false}, {$o, false}, {$o, false},
+                  {$ , true}, {throw, eval_fail}],
+                 get_values(Sink)).
+
+%%% Noxious helpers live here
+
+make_effectful_fun(SinkPid, WrappedFun) ->
+    fun(bottom) ->
+            SinkPid ! {evald, throw, eval_fail},
+            throw(eval_fail);
+       (Val) ->
+            Result = WrappedFun(Val),
+            SinkPid ! {evald, Val, Result},
+            Result
+    end.
+
+get_values(SinkPid) ->
+    SinkPid ! {dump, self()},
+    receive {ok, Vs} -> Vs end.
+
+spawn_sink() ->
+    spawn_link(fun() -> loop([]) end).
+loop(Acc) ->
+    receive
+        {dump, Caller} -> Caller ! {ok, l:reverse(Acc)};
+        {evald, V, R } -> loop([{V,R}|Acc])
+    end.
