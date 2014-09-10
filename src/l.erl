@@ -134,13 +134,12 @@ foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
 filter(F, Xs)                   -> [ X || X <- Xs, F(X) == true ].
 
 -spec delete(A, list(A)) -> list(A).
-delete(X,Xs)             -> delete(X,Xs,[]).
+delete(X,Xs)             -> deleteW(X,Xs,[]).
 
-%% @doc internal
--spec delete(A, list(A), list(A)) -> list(A).
-delete(X,[X|T],Acc)     -> append(reverse(Acc), T);
-delete(X,[Y|T],Acc)     -> delete(X, T, [Y|Acc]);
-delete(_,[],Acc)        -> reverse(Acc).
+-spec deleteW(A, list(A), list(A)) -> list(A).
+deleteW(X,[X|T],Acc)               -> append(reverse(Acc), T);
+deleteW(X,[Y|T],Acc)               -> deleteW(X, T, [Y|Acc]);
+deleteW(_,[],Acc)                  -> reverse(Acc).
 
 -spec concat(list(list(A))) -> list(A).
 concat([])                  -> [];
@@ -189,67 +188,65 @@ minimum(L) when is_list(L) -> foldr(fun erlang:min/2, L);
 minimum(_)                 -> error(badarg).
 
 -spec replicate(non_neg_integer(), A) -> list(A).
-replicate(N,X) when is_integer(N), N>=0 -> replicate(N,X,[]);
+replicate(N,X) when is_integer(N), N>=0 -> replicateW(N,X,[]);
 replicate(N,_) when is_integer(N), N<0 -> error(badarg).
 
-%% @doc internal
--spec replicate(non_neg_integer(), T, list(T)) -> list(T).
-replicate(0,_,Acc) -> Acc;
-replicate(N,X,Acc) -> replicate(N-1,X,[X|Acc]).
+-spec replicateW(non_neg_integer(), T, list(T)) -> list(T).
+replicateW(0,_,Acc)                             -> Acc;
+replicateW(N,X,Acc)                             -> replicateW(N-1,X,[X|Acc]).
 
 -spec take(integer(), list(T))  -> list(T).
 take(N, L) when
-      is_integer(N), is_list(L) -> take(N, L, []);
+      is_integer(N), is_list(L) -> takeW(N, L, []);
 take(_,_)                       -> error(badarg).
 
-%% @doc internal
--spec take(integer(), list(T), list(T)) -> list(T).
-take(_, [], Acc)                        -> reverse(Acc);
-take(0, _, Acc)                         -> reverse(Acc);
-take(N, [H|T], Acc)                     -> take(N-1, T, [H|Acc]).
+-spec takeW(integer(), list(T), list(T)) -> list(T).
+takeW(_, [], Acc)                        -> reverse(Acc);
+takeW(0, _, Acc)                         -> reverse(Acc);
+takeW(N, [H|T], Acc)                     -> takeW(N-1, T, [H|Acc]).
 
 -spec drop(integer(), list(T))  -> list(T).
 drop(N, L) when
-      is_integer(N), is_list(L) -> drop_(N, L);
+      is_integer(N), is_list(L) -> dropW(N, L);
 drop(_, _)                      -> error(badarg).
 
--spec drop_(integer(), list(T)) -> list(T).
-drop_(N, L) when (N<1)          -> L;
-drop_(_, [])                    -> [];
-drop_(N, [_|T])                 -> drop(N-1, T).
+-spec dropW(integer(), list(T)) -> list(T).
+dropW(N, L) when (N<1)          -> L;
+dropW(_, [])                    -> [];
+dropW(N, [_|T])                 -> dropW(N-1, T).
 
 -spec split_at(integer(), list()) -> {list(), list()}.
 split_at(N, L) when
-      is_integer(N), is_list(L)   -> split_at(N, L, {[], []});
+      is_integer(N), is_list(L)   -> split_atW(N, L, {[], []});
 split_at(_,_)                     -> error(badarg).
 
-%% @doc internal
--spec split_at(integer(), list(), {list(), list()}) -> {list(), list()}.
-split_at(N, L, _) when N < 0                        -> {[], L};
-split_at(0, L, {Pre, []})                           -> {reverse(Pre), L};
-split_at(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
-split_at(N, [H|T], {Pre, []})                       -> split_at(N-1, T, {[H|Pre], []}).
+
+-spec split_atW(integer(), list(), {list(), list()}) -> {list(), list()}.
+split_atW(N, L, _) when N < 0                        -> {[], L};
+split_atW(0, L, {Pre, []})                           -> {reverse(Pre), L};
+split_atW(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
+split_atW(N, [H|T], {Pre, []})                       -> split_atW(N-1, T, {[H|Pre], []}).
 
 -spec take_while(?pred(A), list(A)) -> list(A).
 take_while(P, L) when
-      is_function(P, 1), is_list(L) -> take_while(P, L, []);
+      is_function(P, 1), is_list(L) -> take_whileW(P, L, []);
 take_while(_, _)                    -> error(badarg).
 
-%% @doc internal
-take_while(_, [], Acc) -> reverse(Acc);
-take_while(P, [H|T], Acc) ->
-    case P(H) of true -> take_while(P, T, [H|Acc]);
+-spec take_whileW(?pred(A), list(A), list(A)) -> list(A).
+take_whileW(_, [], Acc)                       -> reverse(Acc);
+take_whileW(P, [H|T], Acc) ->
+    case P(H) of true -> take_whileW(P, T, [H|Acc]);
                 false -> reverse(Acc)
     end.
 
 -spec drop_while(?pred(A), list(A)) -> list(A).
 drop_while(P, L) when
-      is_function(P), is_list(L)               -> drop_while_(P, L);
-drop_while(_,_)                                -> error(badarg).
+      is_function(P), is_list(L)    -> drop_whileW(P, L);
+drop_while(_,_)                     -> error(badarg).
 
-%% @doc internal
-drop_while_(_, []) -> [];
-drop_while_(P, [H|T]) ->
-    case P(H) of true -> drop_while_(P, T);
+-spec drop_whileW(?pred(A), list(A)) -> list(A).
+drop_whileW(_, [])                   -> [];
+drop_whileW(P, [H|T]) ->
+    case P(H) of true -> drop_whileW(P, T);
                  false -> [H|T]
     end.
