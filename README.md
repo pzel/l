@@ -10,6 +10,7 @@ Current status
 
 The following functions are implemented:
 
+### Basic functions
          append/2,
          head/1,
          last/1,
@@ -18,6 +19,7 @@ The following functions are implemented:
          null/1,
          length/1,
 
+### List transformations
          map/2,
          reverse/1,
          intersperse/2,
@@ -26,32 +28,41 @@ The following functions are implemented:
          subsequences/1,
          permutations/1,
 
+### Reducing lists (folds)
          foldr/3,
          foldr/2,  (known as foldr1 in Data.List)
          foldl/3,
          foldl/2,  (known as foldl1 in Data.List)
 
+### Special folds
          concat/1,
          concat_map/2,
          'and'/1,
          'or'/1,
-         any_/1,
+         any/1,
          all/2,
          sum/1,
          product/1,
          maximum/1,
          minimum/1,
 
+### Infinite lists
          replicate/2,
 
+### Sublists
+#### Extracting sublists
          take/2,
          drop/2,
          split_at/2,
          take_while/2,
          drop_while/2,
 
+### Searching lists
+#### Searching with a predicate
          filter/2,
 
+### Special lists
+#### "Set" operations
          delete/2
 
 Project roadmap

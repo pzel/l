@@ -36,7 +36,7 @@ $(error "Rebar not available on this system")
 endif
 
 .PHONY: all compile doc clean test dialyzer typer shell distclean pdf \
-  update-deps clean-common-test-data rebuild
+  update-deps clean-common-test-data rebuild pages publish
 
 
 all: deps compile dialyzer test
@@ -58,6 +58,7 @@ compile:
 	$(REBAR) skip_deps=true compile
 
 doc:
+	-rm -rf doc
 	$(REBAR) skip_deps=true doc
 
 eunit: compile clean-common-test-data
@@ -101,3 +102,20 @@ distclean: clean
 	- rm -rvf $(CURDIR)/deps
 
 rebuild: distclean deps compile escript dialyzer test
+
+pages:
+	@(git branch -v | grep -q gh-pages || (echo local gh-pages branch missing; false))
+	@echo
+	@git branch -av | grep gh-pages
+	@echo
+	@(echo 'Is the branch up to date? Press enter to continue.'; read dummy)
+	git clone -b gh-pages . pages
+
+publish: doc pages
+	rm -rf pages/*
+	cp -r doc/. pages/.
+	(cd pages; git add -A)
+	-(cd pages; git commit -m "Update $(date +%Y%m%d%H%M%S)")
+	(cd pages; git push origin gh-pages)
+	rm -rf pages
+	git push origin gh-pages
