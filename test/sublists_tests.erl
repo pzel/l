@@ -124,8 +124,7 @@ prop_span_is_take_while_drop_while() ->
 break_test_() ->
     Lt = fun(N)-> fun(X)-> X < N end end,
     Gt = fun(N)-> fun(X)-> X > N end end,
-    [
-     ?_assertEqual({[1,2,3],[4,1,2,3,4]}, l:break(Gt(3), [1,2,3,4,1,2,3,4])),
+    [?_assertEqual({[1,2,3],[4,1,2,3,4]}, l:break(Gt(3), [1,2,3,4,1,2,3,4])),
      ?_assertEqual({[],[1,2,3]},          l:break(Lt(9), [1,2,3])),
      ?_assertEqual({[1,2,3],[]},          l:break(Gt(9), [1,2,3])),
      ?_assertError(badarg,                l:break(cake, [1,2,3])),
@@ -146,6 +145,15 @@ strip_prefix_test_() ->
      ?_assertEqual(false,       l:strip_prefix("foo", "barfoobaz")),
      ?_assertError(badarg,      l:strip_prefix(gax, "barfoobaz")),
      ?_assertError(badarg,      l:strip_prefix("a", abcdefghijklmnop))
+    ].
+
+%% group/1
+group_test_() ->
+    [?_assertEqual(["a"],      l:group("a")),
+     ?_assertEqual(["a","b"],  l:group("ab")),
+     ?_assertEqual(["aa","b"], l:group("aab")),
+     ?_assertEqual(["M","i","ss","i","ss","i","pp","i"], l:group("Mississippi")),
+     ?_assertError(badarg,     l:group(foo))
     ].
 
 
