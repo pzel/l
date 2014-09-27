@@ -115,6 +115,12 @@ span_test_() ->
      ?_assertError(badarg,                l:span(Lt(0), Lt(99)))
     ].
 
+prop_span_is_take_while_drop_while() ->
+    IsZero = fun(N)-> N == 0 end,
+    ?FORALL(L, helpers:short_list(choose(-3,3)),
+            l:span(IsZero, L) ==
+                {l:take_while(IsZero, L), l:drop_while(IsZero, L)}).
+
 %%% Noxious helpers live here
 
 make_effectful_fun(SinkPid, WrappedFun) ->
