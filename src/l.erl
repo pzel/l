@@ -44,6 +44,7 @@
         ,break/2
         ,strip_prefix/2
         ,group/1
+        ,inits/1
 
         ,filter/2
 
@@ -307,3 +308,20 @@ group(_)                 -> error(badarg).
 group_([], Acc)             -> reverse(Acc);
 group_([H|T], [[H|Hs]|Acc]) -> group_(T, [[H,H|Hs] | Acc]);
 group_([H|T], Acc)          -> group_(T, [[H]      | Acc]).
+
+-spec inits([A]) -> [[A], ...].
+inits(L) when is_list(L) -> [[]|inits_(L,[],[])];
+inits(_)                 -> error(badarg).
+
+-spec inits_([A], [A], [[A]]) -> [[A]].
+inits_([], _, Acc)     -> reverse(Acc);
+inits_([H|T],Last,Acc) ->
+    This = Last++[H],
+    inits_(T, This, [This|Acc]).
+
+%% Optimized version, using lists:flatten/1
+%% -spec inits_([A], [A], [[A]]) -> [[A]].
+%% inits_([], _, Acc)     -> reverse(map(fun lists:flatten/1, Acc));
+%% inits_([H|T],Last,Acc) ->
+%%     This = [Last|[H]],
+%%     inits_(T, This, [This|Acc]).

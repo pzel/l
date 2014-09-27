@@ -156,6 +156,13 @@ group_test_() ->
      ?_assertError(badarg,     l:group(foo))
     ].
 
+%% inits/1
+inits_test_() ->
+    [?_assertEqual([""],                   l:inits("")),
+     ?_assertEqual(["", "a", "ab", "abc"], l:inits("abc")),
+     ?_assertError(badarg,                 l:inits(foo))
+    ].
+
 
 %%% Noxious helpers live here
 

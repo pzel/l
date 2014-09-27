@@ -61,6 +61,7 @@ The following functions are implemented:
         break/2
         strip_prefix/2
         group/1
+	inits/1
 
 ### Searching lists
 #### Searching with a predicate
