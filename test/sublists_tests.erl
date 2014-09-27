@@ -104,6 +104,17 @@ drop_while_end_evaluation_test() ->
                   {$ , true}, {throw, eval_fail}],
                  get_evaled_values(Sink)).
 
+%% span/2
+
+span_test_() ->
+    Lt = fun(N)-> fun(X)-> X < N end end,
+    [?_assertEqual({[1,2],[3,4,1,2,3,4]}, l:span(Lt(3), [1,2,3,4,1,2,3,4])),
+     ?_assertEqual({[1,2,3],[]},          l:span(Lt(9), [1,2,3])),
+     ?_assertEqual({[],[1,2,3]},          l:span(Lt(0), [1,2,3])),
+     ?_assertError(badarg,                l:span(cpan, [1,2,3])),
+     ?_assertError(badarg,                l:span(Lt(0), Lt(99)))
+    ].
+
 %%% Noxious helpers live here
 
 make_effectful_fun(SinkPid, WrappedFun) ->

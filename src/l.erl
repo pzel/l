@@ -40,6 +40,7 @@
         ,take_while/2
         ,drop_while/2
         ,drop_while_end/2
+        ,span/2
 
         ,filter/2
 
@@ -47,8 +48,7 @@
         ]).
 
 %% API
-
--define(pred(T), fun((T)->boolean())).
+-type pred(A) :: fun((A)->boolean()).
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -131,7 +131,7 @@ foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
 
--spec filter(?pred(A),[A]) -> [A].
+-spec filter(pred(A),[A]) -> [A].
 filter(F, Xs)              -> [ X || X <- Xs, F(X) == true ].
 
 -spec delete(A,[A]) -> [A].
@@ -162,13 +162,13 @@ concat_map(F, L) when is_function(F) -> concat(map(F, L)).
 'or'([false|Rest])          -> 'or'(Rest);
 'or'(_)                     -> error(badarg).
 
--spec any(?pred(A),[A])            -> boolean().
+-spec any(pred(A),[A])            -> boolean().
 any(F,[])    when is_function(F,1) -> false;
 any(F,[H|T]) when is_function(F,1) ->
     F(H) orelse any(F, T);
 any(_,_)                           -> error(badarg).
 
--spec all(?pred(A),[A])            -> boolean().
+-spec all(pred(A),[A])            -> boolean().
 all(F,[])    when is_function(F,1) -> true;
 all(F,[H|T]) when is_function(F,1) ->
     F(H) andalso all(F, T);
@@ -225,39 +225,51 @@ split_at_(0, L, {Pre, []})                           -> {reverse(Pre), L};
 split_at_(_, [],{Pre, Post})                         -> {reverse(Pre), Post};
 split_at_(N, [H|T], {Pre, []})                       -> split_at_(N-1, T, {[H|Pre], []}).
 
--spec take_while(?pred(A),[A]) -> [A].
+-spec take_while(pred(A),[A]) -> [A].
 take_while(P, L) when
       is_function(P,1),is_list(L) -> take_while_(P, L, []);
 take_while(_, _)                  -> error(badarg).
 
--spec take_while_(?pred(A),[A],[A]) -> [A].
+-spec take_while_(pred(A),[A],[A]) -> [A].
 take_while_(_, [], Acc)             -> reverse(Acc);
 take_while_(P, [H|T], Acc) ->
     case P(H) of true -> take_while_(P, T, [H|Acc]);
                 false -> reverse(Acc)
     end.
 
--spec drop_while(?pred(A),[A]) -> [A].
+-spec drop_while(pred(A),[A]) -> [A].
 drop_while(P, L) when
       is_function(P,1),is_list(L) -> drop_while_(P, L);
 drop_while(_,_)                   -> error(badarg).
 
--spec drop_while_(?pred(A),[A]) -> [A].
+-spec drop_while_(pred(A),[A]) -> [A].
 drop_while_(_, [])              -> [];
 drop_while_(P, [H|T]) ->
     case P(H) of true -> drop_while_(P, T);
                  false -> [H|T]
     end.
 
--spec drop_while_end(?pred(A),[A]) -> [A].
+-spec drop_while_end(pred(A),[A]) -> [A].
 drop_while_end(P,L) when
       is_list(L), is_function(P,1) -> drop_while_end_(P,L,[],[]);
 drop_while_end(_,_)                -> error(badarg).
 
--spec drop_while_end_(?pred(A),[A],[A],[A]) -> [A].
+-spec drop_while_end_(pred(A),[A],[A],[A]) -> [A].
 drop_while_end_(_,[],Visited,Qualified) ->
     l:reverse(l:drop(l:length(Qualified), Visited));
 drop_while_end_(P,[H|T],V,Q) ->
     case P(H) of true -> drop_while_end_(P,T,[H|V],[H|Q]);
                 false -> drop_while_end_(P,T,[H|V],[])
     end.
+
+-spec span(pred(A), [A]) -> {[A], [A]}.
+span(P,L) when
+      is_list(L), is_function(P,1) -> span_(P,L,[]);
+span(_,_) -> error(badarg).
+
+-spec span_(pred(A), [A], [A]) -> {[A], [A]}.
+span_(P,[H|T]=L,Acc) ->
+    case P(H) of true -> span_(P,T,[H|Acc]);
+                 false -> {reverse(Acc),L}
+    end;
+span_(_,[],Acc) -> {reverse(Acc),[]}.
