@@ -17,7 +17,6 @@ short_list(T) ->
     ?LET(Length, choose(1,10),
          vector(Length, T)).
 
-
 %%
 %%  Actually useful factorial!
 %%

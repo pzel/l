@@ -62,6 +62,7 @@ The following functions are implemented:
         strip_prefix/2
         group/1
 	inits/1
+	tails/1
 
 ### Searching lists
 #### Searching with a predicate

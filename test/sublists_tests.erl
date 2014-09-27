@@ -160,9 +160,21 @@ group_test_() ->
 inits_test_() ->
     [?_assertEqual([""],                   l:inits("")),
      ?_assertEqual(["", "a", "ab", "abc"], l:inits("abc")),
-     ?_assertError(badarg,                 l:inits(foo))
+     ?_assertError(badarg,                 l:inits(barley))
     ].
 
+%% tails/1
+tails_test_() ->
+    [?_assertEqual([""],                  l:tails("")),
+     ?_assertEqual(["abc", "bc", "c",""], l:tails("abc")),
+     ?_assertError(badarg,                l:tails(oats))
+    ].
+
+prop_append_inits_tails() ->
+    ?FORALL(L, non_empty(string()),
+            L == l:head(l:tails(L)) ++ l:head(l:inits(L))
+            andalso
+            L == l:last(l:tails(L)) ++ l:last(l:inits(L))).
 
 %%% Noxious helpers live here
 

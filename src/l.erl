@@ -45,6 +45,7 @@
         ,strip_prefix/2
         ,group/1
         ,inits/1
+        ,tails/1
 
         ,filter/2
 
@@ -320,8 +321,16 @@ inits_([H|T],Last,Acc) ->
     inits_(T, This, [This|Acc]).
 
 %% Optimized version, using lists:flatten/1
-%% -spec inits_([A], [A], [[A]]) -> [[A]].
 %% inits_([], _, Acc)     -> reverse(map(fun lists:flatten/1, Acc));
 %% inits_([H|T],Last,Acc) ->
 %%     This = [Last|[H]],
 %%     inits_(T, This, [This|Acc]).
+
+-spec tails([A]) -> [[A], ...].
+tails(L) when is_list(L) -> reverse([[]|tails_(L,[])]);
+tails(_)                 -> error(badarg).
+
+-spec tails_([A], [[A]]) -> [[A], ...].
+tails_([], Acc) -> Acc;
+tails_([H|T], Acc) -> tails_(T, [[H|T]|Acc]).
+
