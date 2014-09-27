@@ -41,6 +41,7 @@
         ,drop_while/2
         ,drop_while_end/2
         ,span/2
+        ,break/2
 
         ,filter/2
 
@@ -273,3 +274,16 @@ span_(P,[H|T]=L,Acc) ->
                  false -> {reverse(Acc),L}
     end;
 span_(_,[],Acc) -> {reverse(Acc),[]}.
+
+-spec break(pred(A), [A]) -> {[A], [A]}.
+break(P,L) when
+      is_list(L), is_function(P,1) -> break_(P,L,[]);
+break(_,_) -> error(badarg).
+
+-spec break_(pred(A), [A], [A]) -> {[A], [A]}.
+break_(P,[H|T]=L,Acc) ->
+    case P(H) of false -> break_(P,T,[H|Acc]);
+                 true -> {reverse(Acc), L}
+    end;
+break_(_,[],Acc) -> {reverse(Acc),[]}.
+

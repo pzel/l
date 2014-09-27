@@ -120,6 +120,23 @@ prop_span_is_take_while_drop_while() ->
     ?FORALL(L, helpers:short_list(choose(-3,3)),
             l:span(IsZero, L) ==
                 {l:take_while(IsZero, L), l:drop_while(IsZero, L)}).
+%% break/2
+break_test_() ->
+    Lt = fun(N)-> fun(X)-> X < N end end,
+    Gt = fun(N)-> fun(X)-> X > N end end,
+    [
+     ?_assertEqual({[1,2,3],[4,1,2,3,4]}, l:break(Gt(3), [1,2,3,4,1,2,3,4])),
+     ?_assertEqual({[],[1,2,3]},          l:break(Lt(9), [1,2,3])),
+     ?_assertEqual({[1,2,3],[]},          l:break(Gt(9), [1,2,3])),
+     ?_assertError(badarg,                l:break(cake, [1,2,3])),
+     ?_assertError(badarg,                l:break(Lt(0), Lt(99)))
+     ].
+
+prop_break_is_span_not_p() ->
+    IsZero = fun(N)-> N == 0 end,
+    ?FORALL(L, helpers:short_list(choose(-3,3)),
+            l:break(IsZero, L) ==
+                l:span(fun(X)-> not IsZero(X) end, L)).
 
 %%% Noxious helpers live here
 
