@@ -138,6 +138,17 @@ prop_break_is_span_not_p() ->
             l:break(IsZero, L) ==
                 l:span(fun(X)-> not IsZero(X) end, L)).
 
+%% strip_prefix/2
+strip_prefix_test_() ->
+    [?_assertEqual({ok, "bar"}, l:strip_prefix("foo", "foobar")),
+     ?_assertEqual({ok, ""},    l:strip_prefix("foo", "foo")),
+     ?_assertEqual(false,       l:strip_prefix("foo", "barfoo")),
+     ?_assertEqual(false,       l:strip_prefix("foo", "barfoobaz")),
+     ?_assertError(badarg,      l:strip_prefix(gax, "barfoobaz")),
+     ?_assertError(badarg,      l:strip_prefix("a", abcdefghijklmnop))
+    ].
+
+
 %%% Noxious helpers live here
 
 make_effectful_fun(SinkPid, WrappedFun) ->

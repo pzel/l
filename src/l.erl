@@ -42,6 +42,7 @@
         ,drop_while_end/2
         ,span/2
         ,break/2
+        ,strip_prefix/2
 
         ,filter/2
 
@@ -287,3 +288,12 @@ break_(P,[H|T]=L,Acc) ->
     end;
 break_(_,[],Acc) -> {reverse(Acc),[]}.
 
+-spec strip_prefix([A],[A])-> {ok, [A]} | false.
+strip_prefix(P,L) when is_list(P), is_list(L) -> strip_prefix_(P,L);
+strip_prefix(_,_)                             -> error(badarg).
+
+-spec strip_prefix_([A],[A])-> {ok, [A]} | false.
+strip_prefix_(P,P)              -> {ok, []};
+strip_prefix_([],L)             -> {ok, L};
+strip_prefix_([PH|PT], [PH|LT]) -> strip_prefix_(PT, LT);
+strip_prefix_(_,_)              -> false.

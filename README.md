@@ -59,6 +59,7 @@ The following functions are implemented:
         drop_while_end/2
         span/2
         break/2
+        strip_prefix/2
 
 ### Searching lists
 #### Searching with a predicate
