@@ -1,4 +1,4 @@
--module(searching_with_a_predicate_tests).
+-module(searching_lists_tests).
 -include_lib("proper_eunit/include/pt_proper_eunit.hrl").
 
 %%
