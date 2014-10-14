@@ -48,6 +48,7 @@
         ,tails/1
 
         ,is_prefix_of/2
+        ,is_suffix_of/2
 
         ,filter/2
 
@@ -346,3 +347,8 @@ is_prefix_of_([], _)          -> true;
 is_prefix_of_([H|T1], [H|T2]) -> is_prefix_of_(T1, T2);
 is_prefix_of_(_,_)            -> false.
 
+
+-spec is_suffix_of([A], [A]) -> boolean().
+is_suffix_of(L1, L2) when is_list(L1), is_list(L2) ->
+    is_prefix_of(l:reverse(L1),l:reverse(L2));
+is_suffix_of(_,_) -> error(badarg).

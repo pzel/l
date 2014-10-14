@@ -66,6 +66,7 @@ The following functions are implemented:
 
 ### Predicates
         is_prefix_of/2
+        is_suffix_of/2
 
 ### Searching lists
 #### Searching with a predicate
