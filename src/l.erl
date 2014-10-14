@@ -47,6 +47,8 @@
         ,inits/1
         ,tails/1
 
+        ,is_prefix_of/2
+
         ,filter/2
 
         ,delete/2
@@ -331,6 +333,16 @@ tails(L) when is_list(L) -> reverse([[]|tails_(L,[])]);
 tails(_)                 -> error(badarg).
 
 -spec tails_([A], [[A]]) -> [[A], ...].
-tails_([], Acc) -> Acc;
-tails_([H|T], Acc) -> tails_(T, [[H|T]|Acc]).
+tails_([], Acc)          -> Acc;
+tails_([H|T], Acc)       -> tails_(T, [[H|T]|Acc]).
+
+
+-spec is_prefix_of([A], [A])                      -> boolean().
+is_prefix_of(L1,L2) when is_list(L1), is_list(L2) -> is_prefix_of_(L1, L2);
+is_prefix_of(_,_)                                 -> error(badarg).
+
+-spec is_prefix_of_([A], [A]) -> boolean().
+is_prefix_of_([], _)          -> true;
+is_prefix_of_([H|T1], [H|T2]) -> is_prefix_of_(T1, T2);
+is_prefix_of_(_,_)            -> false.
 

@@ -61,8 +61,11 @@ The following functions are implemented:
         break/2
         strip_prefix/2
         group/1
-	inits/1
-	tails/1
+        inits/1
+        tails/1
+
+### Predicates
+        is_prefix_of/2
 
 ### Searching lists
 #### Searching with a predicate
