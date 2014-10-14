@@ -70,6 +70,10 @@ The following functions are implemented:
         is_infix_of/2
 
 ### Searching lists
+#### Searching by equality
+        elem/2
+        not_elem/2
+
 #### Searching with a predicate
         filter/2
 

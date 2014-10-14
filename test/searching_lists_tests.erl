@@ -2,6 +2,31 @@
 -include_lib("proper_eunit/include/pt_proper_eunit.hrl").
 
 %%
+%% Searching by equality
+%%
+
+%% elem/2
+elem_test_() ->
+    [?_assertEqual(true,  l:elem(1,[1])),
+     ?_assertEqual(true,  l:elem(3,[1,2,3])),
+     ?_assertEqual(false, l:elem(1,[])),
+     ?_assertError(badarg, l:elem(1,notlist))
+    ].
+
+prop_elem() ->
+    ?FORALL({L1, L2, El}, {list(integer()), list(integer()), integer()},
+            l:elem(El, L1 ++ [El] ++ L2)).
+
+
+%% not_elem/2
+not_elem_test_() ->
+    [?_assertEqual(false,  l:not_elem(1,[1])),
+     ?_assertEqual(false,  l:not_elem(3,[1,2,3])),
+     ?_assertEqual(true,   l:not_elem(1,[])),
+     ?_assertError(badarg, l:not_elem(1,notlist))
+    ].
+
+%%
 %%  Searching with a predicate
 %%
 
@@ -23,14 +48,9 @@ prop_filter_half() ->
     ?FORALL({Negs, Poss}, {list(neg_integer()), list(pos_integer())},
             begin
                 All = l:append(Negs,Poss),
-                FilteredPs = l:filter(fun pos/1, All),
-                FilteredNs = l:filter(fun(X) -> not pos(X) end, All),
-
-                l:length(FilteredPs) == l:length(Poss)
+                l:filter(fun pos/1, All) == Poss
                 andalso
-                l:length(FilteredNs) == l:length(Negs)
-                andalso
-                l:length(l:append(FilteredNs,FilteredPs)) == l:length(All)
+                l:filter(fun(X) -> not pos(X) end, All) == Negs
             end).
 
 t(_) -> true.

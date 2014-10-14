@@ -51,6 +51,8 @@
         ,is_suffix_of/2
         ,is_infix_of/2
 
+        ,elem/2
+        ,not_elem/2
         ,filter/2
 
         ,delete/2
@@ -364,3 +366,15 @@ is_infix_of_(Pat, L)         ->
     case is_prefix_of(Pat, L) of true -> true;
                                    _  -> is_infix_of_(Pat, tail(L))
     end.
+
+-spec elem(A,[A])         -> boolean().
+elem(A,L) when is_list(L) -> elem_(A,L);
+elem(_,_)                 -> error(badarg).
+
+-spec elem_(A,[A]) -> boolean().
+elem_(X, [X|_])    -> true;
+elem_(_, [])       -> false;
+elem_(X, [_|T])    -> elem(X, T).
+
+-spec not_elem(A, [A]) -> boolean().
+not_elem(A, L) -> not elem(A, L).
