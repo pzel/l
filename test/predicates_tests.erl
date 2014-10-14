@@ -43,3 +43,17 @@ prop_all_tails_are_suffixes() ->
             l:all(fun(Tail) -> l:is_suffix_of(Tail, L) end,
                   l:tails(L))).
 
+
+%% is_infix_of/2
+is_infix_of_test_() ->
+    [?_assertEqual(true,   l:is_infix_of("", "")),
+     ?_assertEqual(true,   l:is_infix_of("", "Erlang is OK")),
+     ?_assertEqual(true,   l:is_infix_of("is", "Erlang is OK")),
+     ?_assertEqual(false,  l:is_infix_of("isa", "Erlang is OK")),
+     ?_assertError(badarg, l:is_infix_of(y, "abc")),
+     ?_assertError(badarg, l:is_infix_of("a", 200))
+    ].
+
+prop_infix_of() ->
+    ?FORALL({L1, L2, L3}, {list(integer()), list(integer()), list(integer())},
+            l:is_infix_of(L2, L1++L2++L3)).
