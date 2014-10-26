@@ -56,6 +56,7 @@
         ,find/2
         ,lookup/2
         ,filter/2
+        ,partition/2
 
         ,delete/2
         ]).
@@ -403,3 +404,13 @@ filter(_,_)                                    -> error(badarg).
 
 -spec filter_(pred(A),[A]) -> [A].
 filter_(F, Xs)             -> [ X || X <- Xs, F(X) == true ].
+
+-spec partition(pred(A), [A])                    -> {[A], [A]}.
+partition(P,L) when is_function(P,1), is_list(L) -> partition_(P,L, {[], []});
+partition(_,_)                                   -> error(badarg).
+
+-spec partition_(pred(A), [A], {[A], [A]}) -> {[A], [A]}.
+partition_(_,[],{Trues,Falses}) -> {reverse(Trues), reverse(Falses)};
+partition_(P,[H|T],{Trues, Falses}) ->
+    case P(H) of true -> partition_(P, T, {[H|Trues], Falses});
+                 false -> partition_(P, T, {Trues, [H|Falses]}) end.

@@ -78,6 +78,7 @@ The following functions are implemented:
 #### Searching with a predicate
         find/2
         filter/2
+        partition/2
 
 ### Special lists
 #### "Set" operations

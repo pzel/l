@@ -71,10 +71,10 @@ filter_test_() ->
      ?_assertError(badarg, l:filter(fun t/1, notlist))
     ].
 
-prop_const_true_is_id() ->
+prop_filter_const_true_is_id() ->
     ?FORALL(Xs, list(integer()),
             l:filter(fun t/1, Xs) == Xs).
-prop_const_false_is_null() ->
+prop_filter_const_false_is_null() ->
     ?FORALL(Xs, list(integer()),
             l:filter(fun f/1, Xs) == []).
 
@@ -87,7 +87,24 @@ prop_filter_half() ->
                 l:filter(fun(X) -> not pos(X) end, All) == Negs
             end).
 
+%% partition/2
+partition_test_() ->
+    [?_assertEqual({[], []},   l:partition(eq(0), [])),
+     ?_assertEqual({[0], [1]},   l:partition(eq(0), [0,1])),
+     ?_assertError(badarg, l:partition(notfun, [])),
+     ?_assertError(badarg, l:partition(eq(0), notlist))
+    ].
+
+prop_partition() ->
+    ?FORALL({X, Xs}, {integer(), list(integer())},
+            {l:filter(lt(X), Xs), l:filter(not_lt(X), Xs)}
+            == l:partition(lt(X), Xs)).
+
+
+
 t(_) -> true.
 f(_) -> false.
 pos(N) -> N > 0.
+lt(X) -> fun(Y) -> Y < X end.
+not_lt(X) -> fun(Y) -> not (Y < X) end.
 eq(X) -> fun(Y) -> Y == X end.
