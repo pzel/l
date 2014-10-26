@@ -17,6 +17,7 @@
 
 ERLFLAGS= -pa $(CURDIR)/.eunit -pa $(CURDIR)/ebin -pa $(CURDIR)/deps/*/ebin
 
+EUNIT_INDEX=./.eunit/index.html
 DEPS_PLT=$(CURDIR)/.deps_plt
 DEPS=erts kernel stdlib
 DIALYZER_OPTS=-Wunmatched_returns -Werror_handling -Wrace_conditions -Wunderspecs
@@ -40,7 +41,7 @@ endif
 
 
 all: deps compile dialyzer test
-sure: compile dialyzer test
+sure: compile dialyzer test check_cover
 
 # =============================================================================
 # Rules to build the system
@@ -57,11 +58,15 @@ update-deps:
 compile:
 	$(REBAR) skip_deps=true compile
 
+check_cover:
+	@grep --quiet "<tr><td><a href='l.COVER.html'>l</a></td><td>100%</td>" $(EUNIT_INDEX)
+
 doc:
 	-rm -rf doc
 	$(REBAR) skip_deps=true doc
 
 eunit: compile clean-common-test-data
+	-@rm -rf $(EUNIT_INDEX)
 	@if [ $$SUITE ]; then $(REBAR) skip_deps=true eunit suite=$$SUITE; \
                          else $(REBAR) skip_deps=true eunit; fi
 

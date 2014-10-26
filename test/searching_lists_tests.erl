@@ -66,7 +66,9 @@ prop_find_success() ->
 %% filter/2
 filter_test_() ->
     [?_assertEqual([], l:filter(fun t/1, [])),
-     ?_assertEqual([], l:filter(fun f/1, []))
+     ?_assertEqual([], l:filter(fun f/1, [])),
+     ?_assertError(badarg, l:filter(notfun, [])),
+     ?_assertError(badarg, l:filter(fun t/1, notlist))
     ].
 
 prop_const_true_is_id() ->

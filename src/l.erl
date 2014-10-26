@@ -397,5 +397,9 @@ find_(P,[H|T]) ->
                  false    -> find_(P, T) end;
 find_(_,[])               -> nothing.
 
--spec filter(pred(A),[A]) -> [A].
-filter(F, Xs)             -> [ X || X <- Xs, F(X) == true ].
+-spec filter(pred(A),[A])                      -> [A].
+filter(P, L) when is_function(P,1), is_list(L) -> filter_(P, L);
+filter(_,_)                                    -> error(badarg).
+
+-spec filter_(pred(A),[A]) -> [A].
+filter_(F, Xs)             -> [ X || X <- Xs, F(X) == true ].
