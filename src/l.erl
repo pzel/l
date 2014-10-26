@@ -53,6 +53,7 @@
 
         ,elem/2
         ,not_elem/2
+        ,lookup/2
         ,filter/2
 
         ,delete/2
@@ -60,6 +61,7 @@
 
 %% API
 -type pred(A) :: fun((A)->boolean()).
+-type maybe(A) :: {just, A} | nothing.
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -378,3 +380,13 @@ elem_(X, [_|T])    -> elem(X, T).
 
 -spec not_elem(A, [A]) -> boolean().
 not_elem(A, L) -> not elem(A, L).
+
+
+-spec lookup(A, [{A,B}]) -> maybe(B).
+lookup(K,V) when is_list(V) -> lookup_(K,V);
+lookup(_,_) -> error(badarg).
+
+-spec lookup_(A, [{A,B}]) -> maybe(B).
+lookup_(K,[{K,V}|_]) -> {just, V};
+lookup_(K,[_|T])     -> lookup_(K, T);
+lookup_(_,[])        -> nothing.

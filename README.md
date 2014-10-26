@@ -73,6 +73,7 @@ The following functions are implemented:
 #### Searching by equality
         elem/2
         not_elem/2
+        lookup/2
 
 #### Searching with a predicate
         filter/2

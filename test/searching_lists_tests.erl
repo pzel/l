@@ -26,6 +26,24 @@ not_elem_test_() ->
      ?_assertError(badarg, l:not_elem(1,notlist))
     ].
 
+%% lookup/2
+lookup_test_() ->
+    [?_assertEqual(nothing, l:lookup(a, [])),
+     ?_assertEqual({just, b}, l:lookup(a, [{a,b}])),
+     ?_assertError(badarg, l:lookup(a,fun()->foo end))
+    ].
+
+prop_lookup_failure() ->
+    ?FORALL({Xs, NegK},
+            {list({pos_integer(), term()}), neg_integer()},
+            nothing == l:lookup(NegK, Xs)).
+prop_lookup_success() ->
+    ?FORALL({Xs, NegK, Val},
+            {list({pos_integer(), term()}), neg_integer(), term()},
+            {just, Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])).
+
+
+
 %%
 %%  Searching with a predicate
 %%
@@ -56,4 +74,3 @@ prop_filter_half() ->
 t(_) -> true.
 f(_) -> false.
 pos(N) -> N > 0.
-
