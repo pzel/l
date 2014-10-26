@@ -59,7 +59,6 @@
         ,delete/2
         ]).
 
-%% API
 -type pred(A) :: fun((A)->boolean()).
 -type maybe(A) :: {just, A} | nothing.
 
@@ -299,15 +298,15 @@ break_(P,[H|T]=L,Acc) ->
     end;
 break_(_,[],Acc) -> {reverse(Acc),[]}.
 
--spec strip_prefix([A],[A]) -> {ok, [A]} | false.
+-spec strip_prefix([A],[A]) -> maybe(A).
 strip_prefix(P,L) when is_list(P), is_list(L) -> strip_prefix_(P,L);
 strip_prefix(_,_)                             -> error(badarg).
 
--spec strip_prefix_([A],[A]) -> {ok, [A]} | false.
-strip_prefix_(P,P)              -> {ok, []};
-strip_prefix_([],L)             -> {ok, L};
+-spec strip_prefix_([A],[A]) -> maybe(A).
+strip_prefix_(P,P)              -> {just, []};
+strip_prefix_([],L)             -> {just, L};
 strip_prefix_([PH|PT], [PH|LT]) -> strip_prefix_(PT, LT);
-strip_prefix_(_,_)              -> false.
+strip_prefix_(_,_)              -> nothing.
 
 -spec group([A]) -> [[A]].
 group(L) when is_list(L) -> group_(L,[]);

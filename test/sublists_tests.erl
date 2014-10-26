@@ -139,12 +139,12 @@ prop_break_is_span_not_p() ->
 
 %% strip_prefix/2
 strip_prefix_test_() ->
-    [?_assertEqual({ok, "bar"}, l:strip_prefix("foo", "foobar")),
-     ?_assertEqual({ok, ""},    l:strip_prefix("foo", "foo")),
-     ?_assertEqual(false,       l:strip_prefix("foo", "barfoo")),
-     ?_assertEqual(false,       l:strip_prefix("foo", "barfoobaz")),
-     ?_assertError(badarg,      l:strip_prefix(gax, "barfoobaz")),
-     ?_assertError(badarg,      l:strip_prefix("a", abcdefghijklmnop))
+    [?_assertEqual({just, "bar"}, l:strip_prefix("foo", "foobar")),
+     ?_assertEqual({just, ""},    l:strip_prefix("foo", "foo")),
+     ?_assertEqual(nothing,       l:strip_prefix("foo", "barfoo")),
+     ?_assertEqual(nothing,       l:strip_prefix("foo", "barfoobaz")),
+     ?_assertError(badarg,        l:strip_prefix(gax, "barfoobaz")),
+     ?_assertError(badarg,        l:strip_prefix("a", abcdefghijklmnop))
     ].
 
 %% group/1
