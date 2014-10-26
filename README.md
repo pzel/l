@@ -76,6 +76,7 @@ The following functions are implemented:
         lookup/2
 
 #### Searching with a predicate
+        find/2
         filter/2
 
 ### Special lists

@@ -53,6 +53,7 @@
 
         ,elem/2
         ,not_elem/2
+        ,find/2
         ,lookup/2
         ,filter/2
 
@@ -142,9 +143,6 @@ foldl(_,_,_)                             -> error(badarg).
 foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
-
--spec filter(pred(A),[A]) -> [A].
-filter(F, Xs)              -> [ X || X <- Xs, F(X) == true ].
 
 -spec delete(A,[A]) -> [A].
 delete(X,Xs)        -> delete_(X,Xs,[]).
@@ -380,12 +378,24 @@ elem_(X, [_|T])    -> elem(X, T).
 -spec not_elem(A, [A]) -> boolean().
 not_elem(A, L) -> not elem(A, L).
 
-
 -spec lookup(A, [{A,B}]) -> maybe(B).
 lookup(K,V) when is_list(V) -> lookup_(K,V);
 lookup(_,_) -> error(badarg).
 
 -spec lookup_(A, [{A,B}]) -> maybe(B).
-lookup_(K,[{K,V}|_]) -> {just, V};
-lookup_(K,[_|T])     -> lookup_(K, T);
-lookup_(_,[])        -> nothing.
+lookup_(K,[{K,V}|_])      -> {just, V};
+lookup_(K,[_|T])          -> lookup_(K, T);
+lookup_(_,[])             -> nothing.
+
+-spec find(pred(A), [A])                     -> maybe(A).
+find(P, L) when is_function(P,1), is_list(L) -> find_(P,L);
+find(_,_)                                    -> error(badarg).
+
+-spec find_(pred(A), [A]) -> maybe(A).
+find_(P,[H|T]) ->
+    case P(H) of true     -> {just, H};
+                 false    -> find_(P, T) end;
+find_(_,[])               -> nothing.
+
+-spec filter(pred(A),[A]) -> [A].
+filter(F, Xs)             -> [ X || X <- Xs, F(X) == true ].

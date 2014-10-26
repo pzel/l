@@ -43,11 +43,25 @@ prop_lookup_success() ->
             {just, Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])).
 
 
-
 %%
 %%  Searching with a predicate
 %%
 
+%% find/2
+find_test_() ->
+    [?_assertEqual(nothing, l:find(eq(a), [])),
+     ?_assertEqual({just, a}, l:find(eq(a), [a])),
+     ?_assertError(badarg, l:find(notfun, [x])),
+     ?_assertError(badarg, l:find(eq(1), notlist))
+    ].
+
+prop_find_failure() ->
+    ?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
+            nothing == l:find(eq(NegK), Xs)).
+
+prop_find_success() ->
+    ?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
+            {just, NegK} == l:find(eq(NegK), Xs++[NegK])).
 
 %% filter/2
 filter_test_() ->
@@ -74,3 +88,4 @@ prop_filter_half() ->
 t(_) -> true.
 f(_) -> false.
 pos(N) -> N > 0.
+eq(X) -> fun(Y) -> Y == X end.
