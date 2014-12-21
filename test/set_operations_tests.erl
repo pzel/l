@@ -1,5 +1,8 @@
 -module(set_operations_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
+
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
 
 %%
 %%  "Set" operations
@@ -14,9 +17,9 @@ delete_test_() ->
      ?_assertEqual("bnana", l:delete($a, "banana"))
      ].
 
-prop_delete_in_empty_list() ->
-    ?FORALL(X, integer(),
-            l:delete(X, []) == []).
-prop_delete_cons() ->
-    ?FORALL({X,Xs}, {integer(), list(integer())},
-            l:delete(X, [X|Xs]) == Xs).
+delete_in_empty_list_test_() ->
+    tq(?FORALL(X, int(),
+               l:delete(X, []) == [])).
+delete_cons_test_() ->
+    tq(?FORALL({X,Xs}, {int(), list(int())},
+               l:delete(X, [X|Xs]) == Xs)).

@@ -1,5 +1,8 @@
 -module(predicates_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
+
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
 
 %% is_prefix_of/2
 
@@ -12,15 +15,15 @@ is_prefix_of_test_() ->
      ?_assertError(badarg, l:is_prefix_of("a", 100))
     ].
 
-prop_all_inits_are_prefixes() ->
-    ?FORALL(L, list(),
-            l:all(fun(Init) -> l:is_prefix_of(Init, L) end,
-                  l:inits(L))).
+all_inits_are_prefixes_test_() ->
+    tq(?FORALL(L, list(any()),
+               l:all(fun(Init) -> l:is_prefix_of(Init, L) end,
+                     l:inits(L)))).
 
-prop_all_inits_are_prefixes_of_longer_list() ->
-    ?FORALL({L1, L2}, {list(integer()), list(integer())},
-            l:all(fun(Init) -> l:is_prefix_of(Init, L1++L2) end,
-                  l:inits(L1))).
+all_inits_are_prefixes_of_longer_list_test_() ->
+    tq(?FORALL({L1, L2}, {list(int()), list(int())},
+               l:all(fun(Init) -> l:is_prefix_of(Init, L1++L2) end,
+                     l:inits(L1)))).
 
 %% is_suffix_of/2
 
@@ -33,15 +36,15 @@ is_suffix_of_test_() ->
      ?_assertError(badarg, l:is_suffix_of("a", 200))
     ].
 
-prop_all_tails_are_sufffixes_of_longer_list() ->
-    ?FORALL({L1, L2}, {list(integer()), list(integer())},
+all_tails_are_sufffixes_of_longer_list_test_() ->
+    tq(?FORALL({L1, L2}, {list(int()), list(int())},
             l:all(fun(Tail) -> l:is_suffix_of(Tail, L1++L2) end,
-                  l:tails(L2))).
+                  l:tails(L2)))).
 
-prop_all_tails_are_suffixes() ->
-    ?FORALL(L, list(),
+all_tails_are_suffixes_test_() ->
+    tq(?FORALL(L, list(any()),
             l:all(fun(Tail) -> l:is_suffix_of(Tail, L) end,
-                  l:tails(L))).
+                  l:tails(L)))).
 
 
 %% is_infix_of/2
@@ -54,6 +57,6 @@ is_infix_of_test_() ->
      ?_assertError(badarg, l:is_infix_of("a", 200))
     ].
 
-prop_infix_of() ->
-    ?FORALL({L1, L2, L3}, {list(integer()), list(integer()), list(integer())},
-            l:is_infix_of(L2, L1++L2++L3)).
+infix_of_test_() ->
+    tq(?FORALL({L1, L2, L3}, {list(int()), list(int()), list(int())},
+               l:is_infix_of(L2, L1++L2++L3))).

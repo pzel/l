@@ -1,5 +1,9 @@
 -module(sublists_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
+
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+
 
 %% take/2
 %%
@@ -12,20 +16,21 @@ take_test_() ->
      ?_assertEqual([],      l:take(-1, [])),
      ?_assertEqual([],      l:take(0, [1,3])),
      ?_assertError(badarg,  l:take(foo, [1,2,3])),
-     ?_assertError(badarg,  l:take(3, celestial_birds))
+     ?_assertError(badarg,  l:take(3, celestial_birds)),
+
+     tq(?FORALL(L, list(any()),
+                ?FORALL(N, choose(length(L), 1000*1000),
+                        l:take(N, L) == L))),
+     tq(?FORALL(L, non_empty(list(any())),
+                ?FORALL(N, choose(0, length(L)),
+                        l:take(N,L) ==
+                            l:reverse(l:drop(length(L) - N,
+                                             l:reverse(L))))))
     ].
 
-prop_take_identity() ->
-    ?FORALL(L, list(),
-            ?FORALL(N, choose(length(L), inf),
-                l:take(N, L) == L)).
 
-prop_take_as_reverse_drop() ->
-    ?FORALL(L, non_empty(list()),
-            ?FORALL(N, choose(0, length(L)),
-                    l:take(N,L) ==
-                        l:reverse(l:drop(length(L) - N,
-                                         l:reverse(L))))).
+
+
 
 %% drop/2
 drop_test_() ->
@@ -48,13 +53,14 @@ split_at_test_() ->
      ?_assertEqual({[],[1,2,3]},        l:split_at(0, [1,2,3])),
      ?_assertEqual({[],[1,2,3]},        l:split_at(-1, [1,2,3])),
      ?_assertError(badarg,              l:split_at(goo, [1,2,3])),
-     ?_assertError(badarg,              l:split_at(1, partridge_in_a_pear_tree))
+     ?_assertError(badarg,              l:split_at(1, partridge_in_a_pear_tree)),
+
+     tq(?FORALL(L, non_empty(list(any())),
+                ?FORALL(N, choose(0, length(L)),
+                        l:split_at(N, L) == {l:take(N,L), l:drop(N,L)})))
+
     ].
 
-prop_split_at_is_take_and_drop() ->
-    ?FORALL(L, non_empty(list()),
-            ?FORALL(N, choose(0, length(L)),
-                    l:split_at(N, L) == {l:take(N,L), l:drop(N,L)})).
 
 %% take_while/2
 take_while_test_() ->
@@ -85,11 +91,11 @@ drop_while_end_test_() ->
      ?_assertError(badarg,    l:drop_while_end(IsSpace, fun()->white end))
     ].
 
-prop_drop_while_end() ->
+drop_while_end_prop_test_() ->
     IsZero = fun(N)-> N == 0 end,
-    ?FORALL(L, helpers:short_list(choose(-3,3)),
-            l:drop_while_end(IsZero, L) ==
-                l:reverse(l:drop_while(IsZero, l:reverse(L)))).
+    tq(?FORALL(L, helpers:short_list(choose(-3,3)),
+               l:drop_while_end(IsZero, L) ==
+                   l:reverse(l:drop_while(IsZero, l:reverse(L))))).
 
 drop_while_end_evaluation_test() ->
     %% This verifies  the semantic check present in the
@@ -115,11 +121,11 @@ span_test_() ->
      ?_assertError(badarg,                l:span(Lt(0), Lt(99)))
     ].
 
-prop_span_is_take_while_drop_while() ->
+span_is_take_while_drop_while_test_() ->
     IsZero = fun(N)-> N == 0 end,
-    ?FORALL(L, helpers:short_list(choose(-3,3)),
-            l:span(IsZero, L) ==
-                {l:take_while(IsZero, L), l:drop_while(IsZero, L)}).
+    tq(?FORALL(L, helpers:short_list(choose(-3,3)),
+               l:span(IsZero, L) ==
+                   {l:take_while(IsZero, L), l:drop_while(IsZero, L)})).
 %% break/2
 break_test_() ->
     Lt = fun(N)-> fun(X)-> X < N end end,
@@ -129,13 +135,13 @@ break_test_() ->
      ?_assertEqual({[1,2,3],[]},          l:break(Gt(9), [1,2,3])),
      ?_assertError(badarg,                l:break(cake, [1,2,3])),
      ?_assertError(badarg,                l:break(Lt(0), Lt(99)))
-     ].
+    ].
 
-prop_break_is_span_not_p() ->
+break_is_span_not_p_test_() ->
     IsZero = fun(N)-> N == 0 end,
-    ?FORALL(L, helpers:short_list(choose(-3,3)),
+    tq(?FORALL(L, helpers:short_list(choose(-3,3)),
             l:break(IsZero, L) ==
-                l:span(fun(X)-> not IsZero(X) end, L)).
+                l:span(fun(X)-> not IsZero(X) end, L))).
 
 %% strip_prefix/2
 strip_prefix_test_() ->
@@ -167,14 +173,14 @@ inits_test_() ->
 tails_test_() ->
     [?_assertEqual([""],                  l:tails("")),
      ?_assertEqual(["abc", "bc", "c",""], l:tails("abc")),
-     ?_assertError(badarg,                l:tails(oats))
+     ?_assertError(badarg,                l:tails(oats)),
+
+     tq(?FORALL(L, non_empty(list(any())),
+                L == l:head(l:tails(L)) ++ l:head(l:inits(L))
+                andalso
+                L == l:last(l:tails(L)) ++ l:last(l:inits(L))))
     ].
 
-prop_append_inits_tails() ->
-    ?FORALL(L, non_empty(string()),
-            L == l:head(l:tails(L)) ++ l:head(l:inits(L))
-            andalso
-            L == l:last(l:tails(L)) ++ l:last(l:inits(L))).
 
 %%% Noxious helpers live here
 

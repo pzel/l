@@ -1,5 +1,9 @@
 -module(searching_lists_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
+
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+neg_integer() -> dom_fun:neg_integer().
 
 %%
 %% Searching by equality
@@ -10,12 +14,11 @@ elem_test_() ->
     [?_assertEqual(true,  l:elem(1,[1])),
      ?_assertEqual(true,  l:elem(3,[1,2,3])),
      ?_assertEqual(false, l:elem(1,[])),
-     ?_assertError(badarg, l:elem(1,notlist))
-    ].
+     ?_assertError(badarg, l:elem(1,notlist)),
 
-prop_elem() ->
-    ?FORALL({L1, L2, El}, {list(integer()), list(integer()), integer()},
-            l:elem(El, L1 ++ [El] ++ L2)).
+     tq(?FORALL({L1, L2, El}, {list(int()), list(int()), int()},
+                l:elem(El, L1 ++ [El] ++ L2)))
+    ].
 
 
 %% not_elem/2
@@ -30,18 +33,16 @@ not_elem_test_() ->
 lookup_test_() ->
     [?_assertEqual(nothing, l:lookup(a, [])),
      ?_assertEqual({just, b}, l:lookup(a, [{a,b}])),
-     ?_assertError(badarg, l:lookup(a,fun()->foo end))
+     ?_assertError(badarg, l:lookup(a,fun()->foo end)),
+
+     tq(?FORALL({Xs, NegK},
+                {list({pos_integer(), any()}), neg_integer()},
+                nothing == l:lookup(NegK, Xs))),
+
+     tq(?FORALL({Xs, NegK, Val},
+                {list({pos_integer(), any()}), neg_integer(), any()},
+                {just, Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])))
     ].
-
-prop_lookup_failure() ->
-    ?FORALL({Xs, NegK},
-            {list({pos_integer(), term()}), neg_integer()},
-            nothing == l:lookup(NegK, Xs)).
-prop_lookup_success() ->
-    ?FORALL({Xs, NegK, Val},
-            {list({pos_integer(), term()}), neg_integer(), term()},
-            {just, Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])).
-
 
 %%
 %%  Searching with a predicate
@@ -52,53 +53,49 @@ find_test_() ->
     [?_assertEqual(nothing, l:find(eq(a), [])),
      ?_assertEqual({just, a}, l:find(eq(a), [a])),
      ?_assertError(badarg, l:find(notfun, [x])),
-     ?_assertError(badarg, l:find(eq(1), notlist))
+     ?_assertError(badarg, l:find(eq(1), notlist)),
+
+     tq(?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
+                nothing == l:find(eq(NegK), Xs))),
+
+     tq(?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
+                {just, NegK} == l:find(eq(NegK), Xs++[NegK])))
     ].
-
-prop_find_failure() ->
-    ?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
-            nothing == l:find(eq(NegK), Xs)).
-
-prop_find_success() ->
-    ?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
-            {just, NegK} == l:find(eq(NegK), Xs++[NegK])).
 
 %% filter/2
 filter_test_() ->
     [?_assertEqual([], l:filter(fun t/1, [])),
      ?_assertEqual([], l:filter(fun f/1, [])),
      ?_assertError(badarg, l:filter(notfun, [])),
-     ?_assertError(badarg, l:filter(fun t/1, notlist))
+     ?_assertError(badarg, l:filter(fun t/1, notlist)),
+
+     tq(?FORALL(Xs, list(int()),
+                l:filter(fun t/1, Xs) == Xs)),
+     tq(?FORALL(Xs, list(int()),
+                l:filter(fun f/1, Xs) == [])),
+     tq(?FORALL({Negs, Poss}, {list(neg_integer()), list(pos_integer())},
+                begin
+                    All = l:append(Negs,Poss),
+                    l:filter(fun pos/1, All) == Poss
+                        andalso
+                        l:filter(fun(X) -> not pos(X) end, All) == Negs
+                end))
     ].
 
-prop_filter_const_true_is_id() ->
-    ?FORALL(Xs, list(integer()),
-            l:filter(fun t/1, Xs) == Xs).
-prop_filter_const_false_is_null() ->
-    ?FORALL(Xs, list(integer()),
-            l:filter(fun f/1, Xs) == []).
-
-prop_filter_half() ->
-    ?FORALL({Negs, Poss}, {list(neg_integer()), list(pos_integer())},
-            begin
-                All = l:append(Negs,Poss),
-                l:filter(fun pos/1, All) == Poss
-                andalso
-                l:filter(fun(X) -> not pos(X) end, All) == Negs
-            end).
 
 %% partition/2
 partition_test_() ->
     [?_assertEqual({[], []},   l:partition(eq(0), [])),
      ?_assertEqual({[0], [1]},   l:partition(eq(0), [0,1])),
      ?_assertError(badarg, l:partition(notfun, [])),
-     ?_assertError(badarg, l:partition(eq(0), notlist))
+     ?_assertError(badarg, l:partition(eq(0), notlist)),
+
+     tq(?FORALL({X, Xs}, {int(), list(int())},
+                {l:filter(lt(X), Xs), l:filter(not_lt(X), Xs)}
+                == l:partition(lt(X), Xs)))
     ].
 
-prop_partition() ->
-    ?FORALL({X, Xs}, {integer(), list(integer())},
-            {l:filter(lt(X), Xs), l:filter(not_lt(X), Xs)}
-            == l:partition(lt(X), Xs)).
+
 
 
 

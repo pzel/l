@@ -1,5 +1,5 @@
 -module(helpers).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("triq/include/triq.hrl").
 
 -export([matrix/1,
         short_list/1]).

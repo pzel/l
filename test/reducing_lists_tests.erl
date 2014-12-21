@@ -1,5 +1,11 @@
 -module(reducing_lists_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+%% TODO Triq doesn't implement function() generators
+%% TODO implement & pull request
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
+
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+function(A,B) -> dom_fun:function(A, B).
 
 %%
 %%  Reducing lists (folds) tests
@@ -14,25 +20,25 @@ foldr_badarg_test() ->
 %% foldr is the standard fold ;)
 %% Using the univeral property from Hutton[99].
 
-prop_universal() ->
-    ?FORALL({F, V, [X|Xs]},
-            {function([integer(), integer()], integer),
-             integer(),
-             non_empty(list(integer()))},
-            begin
-                G = fun(List)-> l:fold(F, V, List) end,
-                G([]) == V
-                andalso
-                G([X|Xs]) == F(X, G(Xs))
-            end).
+universal_test_() ->
+    tq(?FORALL({F, V, [X|Xs]},
+               {function([int(), int()], integer),
+                int(),
+                non_empty(list(int()))},
+               begin
+                   G = fun(List)-> l:fold(F, V, List) end,
+                   G([]) == V
+                       andalso
+                       G([X|Xs]) == F(X, G(Xs))
+               end)).
 
-prop_fold_is_foldr() ->
+fold_is_foldr_test_() ->
     %% In case the implementation changes.
-    ?FORALL({F, V, Xs},
-            {function([integer(), integer()], integer),
-             integer(),
-             non_empty(list(integer()))},
-            l:foldr(F, V, Xs) == l:fold(F, V, Xs)).
+    tq(?FORALL({F, V, Xs},
+               {function([int(), int()], integer),
+                int(),
+                non_empty(list(int()))},
+               l:foldr(F, V, Xs) == l:fold(F, V, Xs))).
 
 
 %% foldr/2
@@ -42,27 +48,27 @@ foldr2_badarg_test() ->
     ?assertError(badarg,
                  l:foldr(F, [])).
 
-prop_foldr2_is_foldr_on_last_element() ->
-    ?FORALL({F, List},
-            {function([integer(), integer()], integer),
-             non_empty(list(integer()))},
-            l:foldr(F, List) == l:foldr(F,
-                                         l:last(List),
-                                         l:init(List))).
+foldr2_is_foldr_on_last_element_test_() ->
+    tq(?FORALL({F, List},
+               {function([int(), int()], integer),
+                non_empty(list(int()))},
+               l:foldr(F, List) == l:foldr(F,
+                                           l:last(List),
+                                           l:init(List)))).
 
 %% foldl/3
 %% Welcome to the Twilight Zone.
-prop_foldl_in_terms_of_foldr() ->
+foldl_in_terms_of_foldr_test_() ->
     Id = fun(X)-> X end,
-    ?FORALL({F, A, Bs},
-            {function([integer(), integer()], integer),
-             integer(),
-             non_empty(list(integer()))},
-            l:foldl(F, A, Bs) ==
-                (l:foldr(fun(B,G)-> fun(X)-> G(F(X,B)) end end,
-                         Id,
-                         Bs))(A)
-           ).
+    tq(?FORALL({F, A, Bs},
+               {function([int(), int()], integer),
+                int(),
+                non_empty(list(int()))},
+               l:foldl(F, A, Bs) ==
+                   (l:foldr(fun(B,G)-> fun(X)-> G(F(X,B)) end end,
+                            Id,
+                            Bs))(A)
+              )).
 
 foldl_test_() ->
     [?_assertError(badarg, l:foldl(notfun, 1, [1,2,3])),
@@ -73,13 +79,13 @@ foldl_test_() ->
 foldl2__test_() ->
     [?_assertError(badarg, l:foldl(fun(A,B)-> {A,B} end, []))].
 
-prop_foldl2_is_foldl_on_last_element() ->
-    ?FORALL({F, List},
-            {function([integer(), integer()], integer),
-             non_empty(list(integer()))},
-            l:foldl(F, List) == l:foldl(F,
-                                        l:last(List),
-                                        l:init(List))).
+foldl2_is_foldl_on_last_element_test_() ->
+    tq(?FORALL({F, List},
+               {function([int(), int()], integer),
+                non_empty(list(int()))},
+               l:foldl(F, List) == l:foldl(F,
+                                           l:last(List),
+                                           l:init(List)))).
 
 %% Hutton[99] :
 %% A tutorial on the universality and expressiveness of fold
