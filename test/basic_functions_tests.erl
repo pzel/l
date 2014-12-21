@@ -1,35 +1,41 @@
 -module(basic_functions_tests).
--include_lib("proper_eunit/include/pt_proper_eunit.hrl").
+-include_lib("eunit/include/eunit.hrl").
+-include_lib("triq/include/triq.hrl").
 
 %%
 %% Basic functions
 %%
 
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+
 %% append/2
 append_test_() ->
     [?_assertEqual([1,2], l:append([1], [2]))].
 
-prop_append_empty_left() ->
-    ?FORALL(Xs, list(), l:append([], Xs) == Xs).
-prop_append_empty_right() ->
-    ?FORALL(Xs, list(), l:append(Xs, []) == Xs).
-prop_append_inductive_left() ->
-    ?FORALL({Xs,Ys}, {non_empty(list()),non_empty(list())},
+append_empty_left_test_() ->
+    tq(?FORALL(Xs, list(any()), l:append([], Xs) == Xs)).
+
+append_empty_right_test_() ->
+    tq(?FORALL(Xs, list(any()), l:append(Xs, []) == Xs)).
+
+append_inductive_left_test_() ->
+    tq(?FORALL({Xs,Ys}, {non_empty(list(any())),non_empty(list(any()))},
             l:append(Xs, Ys) ==
-                l:append([l:head(Xs)], l:append(l:tail(Xs), Ys))).
-prop_append_inductive_right() ->
-    ?FORALL({Xs,Ys}, {non_empty(list()),non_empty(list())},
+                l:append([l:head(Xs)], l:append(l:tail(Xs), Ys)))).
+
+append_inductive_right_test_() ->
+    tq(?FORALL({Xs,Ys}, {non_empty(list(any())),non_empty(list(any()))},
                l:append(Xs, Ys) ==
-                   l:append(Xs, l:append([l:head(Ys)], l:tail(Ys)))).
+                   l:append(Xs, l:append([l:head(Ys)], l:tail(Ys))))).
 
 %% head/1
 head_test_() ->
     [?_assertError(badarg, l:head([])),
      ?_assertEqual(1,      l:head([1]))
     ].
-prop_head_is_de_cons() ->
-    ?FORALL({X,Xs}, {term(), non_empty(list())},
-            l:head([X|Xs]) == X).
+head_is_de_cons_test_() ->
+    tq(?FORALL({X,Xs}, {any(), non_empty(list(any()))},
+               l:head([X|Xs]) == X)).
 
 %% last/1
 last_test_() ->
@@ -43,9 +49,9 @@ tail_test_() ->
     [?_assertError(badarg, l:tail([])),
      ?_assertEqual([], l:tail([1]))
     ].
-prop_tail_is_compliment_of_de_cons() ->
-    ?FORALL({X,Xs}, {term(), non_empty(list())},
-            l:tail([X|Xs]) == Xs).
+tail_is_compliment_of_de_cons_test_() ->
+    tq(?FORALL({X,Xs}, {any(), non_empty(list(any()))},
+               l:tail([X|Xs]) == Xs)).
 
 %% init/1
 init_test_() ->
@@ -53,24 +59,24 @@ init_test_() ->
      ?_assertError(badarg, l:init([]))
     ].
 
-prop_init_is_rev_tl_rev() ->
-    ?FORALL(Xs, non_empty(list()),
-            l:init(Xs) == lists:reverse(tl(lists:reverse(Xs)))).
+init_is_rev_tl_rev_test_() ->
+    tq(?FORALL(Xs, non_empty(list(any())),
+               l:init(Xs) == lists:reverse(tl(lists:reverse(Xs))))).
 
 %% null/1
 null_test_() ->
     [?_assertEqual(true, l:null([])),
      ?_assertEqual(true, l:null(""))
     ].
-prop_null_of_nonempty_is_false() ->
-    ?FORALL(Xs, non_empty(list()),
-            l:null(Xs) == false).
+null_of_nonempty_is_false_test_() ->
+    tq(?FORALL(Xs, non_empty(list(any())),
+               l:null(Xs) == false)).
 
 %% length/1
 length_test_() ->
     [?_assertEqual(0, l:length([])),
      ?_assertEqual(1, l:length([a]))
     ].
-prop_length_of_nonempty_inductive() ->
-    ?FORALL(Xs, non_empty(list()),
-            l:length(Xs) == 1 + l:length(tl(Xs))).
+length_of_nonempty_inductive_test_() ->
+    tq(?FORALL(Xs, non_empty(list(any())),
+               l:length(Xs) == 1 + l:length(tl(Xs)))).
