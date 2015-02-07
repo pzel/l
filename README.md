@@ -80,6 +80,9 @@ The following functions are implemented:
         filter/2
         partition/2
 
+### Indexing lists
+        index/2 (a.k.a '!!'/2)
+
 ### Special lists
 #### "Set" operations
          delete/2
@@ -98,7 +101,7 @@ output.
 At this stage, no calls to the `lists:` module will be made. The idea is to
 bootstrap this library using only on its own functions.
 
-Unit tests and [proper](https://github.com/manopapad/proper) properties are
+Unit tests and [triq](https://github.com/krestenkrab/triq) properties are
 written before the functions are actually implemented, but may be incomplete.
 
 Code coverage doesn't drop below 100%.
@@ -115,6 +118,3 @@ extent. The source will be annotated, and generated documentation available.
 This version will make the code more suitable for production by optimizing
 computationally wasteful implementations. Calls to `lists:` functions may appear
 at this point.
-
-
-

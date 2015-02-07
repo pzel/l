@@ -66,6 +66,7 @@
 
 -type pred(A) :: fun((A)->boolean()).
 -type maybe(A) :: {just, A} | nothing.
+-type ne_list(A) :: [A,...].
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -143,7 +144,7 @@ foldl(_,V,[])                            -> V;
 foldl(F,V,[H|T]) when is_function(F,2)   -> foldl(F, F(V,H), T);
 foldl(_,_,_)                             -> error(badarg).
 
--spec foldl(fun((_,_) -> A),[A,...])      -> A.
+-spec foldl(fun((_,_) -> A),ne_list(A))   -> A.
 foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
@@ -194,11 +195,11 @@ sum(L)         -> fold(fun erlang:'+'/2, 0, L).
 -spec product([A]) -> A.
 product(L)         -> fold(fun erlang:'*'/2, 1, L).
 
--spec maximum([A,...])     -> A.
+-spec maximum(ne_list(A))  -> A.
 maximum(L) when is_list(L) -> foldr(fun erlang:max/2, L);
 maximum(_)                 -> error(badarg).
 
--spec minimum([A,...])     -> A.
+-spec minimum(ne_list(A))  -> A.
 minimum(L) when is_list(L) -> foldr(fun erlang:min/2, L);
 minimum(_)                 -> error(badarg).
 
@@ -319,7 +320,7 @@ group_([], Acc)             -> reverse(Acc);
 group_([H|T], [[H|Hs]|Acc]) -> group_(T, [[H,H|Hs] | Acc]);
 group_([H|T], Acc)          -> group_(T, [[H]      | Acc]).
 
--spec inits([A]) -> [[A], ...].
+-spec inits([A]) -> ne_list([A]).
 inits(L) when is_list(L) -> [[]|inits_(L,[],[])];
 inits(_)                 -> error(badarg).
 
@@ -335,11 +336,11 @@ inits_([H|T],Last,Acc) ->
 %%     This = [Last|[H]],
 %%     inits_(T, This, [This|Acc]).
 
--spec tails([A]) -> [[A], ...].
+-spec tails([A]) -> ne_list([A]).
 tails(L) when is_list(L) -> reverse([[]|tails_(L,[])]);
 tails(_)                 -> error(badarg).
 
--spec tails_([A], [[A]]) -> [[A], ...].
+-spec tails_([A], [[A]]) -> ne_list([A]).
 tails_([], Acc)          -> Acc;
 tails_([H|T], Acc)       -> tails_(T, [[H|T]|Acc]).
 
@@ -418,17 +419,17 @@ partition_(P,[H|T],{Trues, Falses}) ->
     case P(H) of true -> partition_(P, T, {[H|Trues], Falses});
                  false -> partition_(P, T, {Trues, [H|Falses]}) end.
 
--spec '!!'([A], integer()) -> A.
+-spec '!!'(ne_list(A), pos_integer()) -> A.
 '!!'(L, Idx) -> l:index(L, Idx).
 
 %% '!!'(_, 0) -> error(index_too_large);
 %% '!!'(_,I) when I < 0 -> error(negative_index).
 
--spec index([A], pos_integer()) -> A.
+-spec index(ne_list(A), pos_integer()) -> A.
 index(L, I) when is_list(L), is_integer(I) -> index_(L,I);
 index(_, _) -> error(badarg).
 
--spec index_([A], pos_integer()) -> A.
+-spec index_(ne_list(A), pos_integer()) -> A.
 index_(_, I) when I < 0 -> error(negative_index);
 index_([H|_], 0) -> H;
 index_([_|T], I) when I > 0 -> index_(T,I-1);
