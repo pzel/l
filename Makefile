@@ -19,7 +19,7 @@ ERLFLAGS= -pa $(CURDIR)/.eunit -pa $(CURDIR)/ebin -pa $(CURDIR)/deps/*/ebin
 
 EUNIT_INDEX=./.eunit/index.html
 DEPS_PLT=$(CURDIR)/.deps_plt
-DEPS=erts kernel stdlib
+DEPS=erts kernel stdlib compiler crypto eunit
 DIALYZER_OPTS=-Wunmatched_returns -Werror_handling -Wrace_conditions -Wunderspecs
 # =============================================================================
 # Verify that the programs we need to run are installed on this system

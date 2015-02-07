@@ -1,8 +1,8 @@
 -module(set_operations_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
+-import(helpers, [tq/1]).
 
-tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
 
 %%
 %%  "Set" operations

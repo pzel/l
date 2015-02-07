@@ -1,8 +1,7 @@
 -module(predicates_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
-
-tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+-import(helpers, [tq/1]).
 
 %% is_prefix_of/2
 

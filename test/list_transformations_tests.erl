@@ -1,12 +1,11 @@
 -module(list_transformations_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
+-import(helpers, [tq/1]).
 
 %%
 %% List transformations
 %%
-
-tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
 
 %% map/2
 map_of_empty_test() ->

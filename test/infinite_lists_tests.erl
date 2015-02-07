@@ -1,12 +1,11 @@
 -module(infinite_lists_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
+-import(helpers, [tq/1]).
 
 %%
 %%  (Not particulary) Infinite lists
 %%
-
-tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
 
 %% replicate/2
 replicate_test_() ->

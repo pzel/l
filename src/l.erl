@@ -58,6 +58,9 @@
         ,filter/2
         ,partition/2
 
+        ,'!!'/2
+        ,index/2 %% alias for '!!'/2
+
         ,delete/2
         ]).
 
@@ -414,3 +417,20 @@ partition_(_,[],{Trues,Falses}) -> {reverse(Trues), reverse(Falses)};
 partition_(P,[H|T],{Trues, Falses}) ->
     case P(H) of true -> partition_(P, T, {[H|Trues], Falses});
                  false -> partition_(P, T, {Trues, [H|Falses]}) end.
+
+-spec '!!'([A], integer()) -> A.
+'!!'(L, Idx) -> l:index(L, Idx).
+
+%% '!!'(_, 0) -> error(index_too_large);
+%% '!!'(_,I) when I < 0 -> error(negative_index).
+
+-spec index([A], pos_integer()) -> A.
+index(L, I) when is_list(L), is_integer(I) -> index_(L,I);
+index(_, _) -> error(badarg).
+
+-spec index_([A], pos_integer()) -> A.
+index_(_, I) when I < 0 -> error(negative_index);
+index_([H|_], 0) -> H;
+index_([_|T], I) when I > 0 -> index_(T,I-1);
+index_([],_) -> error(index_too_large).
+

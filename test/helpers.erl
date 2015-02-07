@@ -1,13 +1,15 @@
 -module(helpers).
 -include_lib("triq/include/triq.hrl").
+-include_lib("eunit/include/eunit.hrl").
 
+-export([tq/1]).
 -export([matrix/1,
         short_list/1]).
 -export([factorial/1]).
 
-%%
-%%  Type generators
-%%
+tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
+
+%% Type generators
 
 matrix(T) ->
     ?LET({Width, Height}, {pos_integer(), pos_integer()},
@@ -17,9 +19,8 @@ short_list(T) ->
     ?LET(Length, choose(1,10),
          vector(Length, T)).
 
-%%
-%%  Actually useful factorial!
-%%
+
+%% An actually useful factorial!
 
 factorial(0) -> 1;
 factorial(1) -> 1;
