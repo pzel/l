@@ -60,13 +60,24 @@
 
         ,'!!'/2
         ,index/2 %% alias for '!!'/2
+        ,elem_index/2
 
         ,delete/2
         ]).
 
+%% make dialyzer happy
+-export([just/1, nothing/0]).
+
 -type pred(A) :: fun((A)->boolean()).
--type maybe(A) :: {just, A} | nothing.
 -type ne_list(A) :: [A,...].
+
+-type maybe(A) :: {just, A} | nothing.
+
+-spec just(A) -> {just,A}.
+just(A) -> {just, A}.
+
+-spec nothing() -> nothing.
+nothing() -> nothing.
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -419,19 +430,27 @@ partition_(P,[H|T],{Trues, Falses}) ->
     case P(H) of true -> partition_(P, T, {[H|Trues], Falses});
                  false -> partition_(P, T, {Trues, [H|Falses]}) end.
 
--spec '!!'(ne_list(A), pos_integer()) -> A.
+-spec '!!'(ne_list(A), non_neg_integer()) -> A.
 '!!'(L, Idx) -> l:index(L, Idx).
 
 %% '!!'(_, 0) -> error(index_too_large);
 %% '!!'(_,I) when I < 0 -> error(negative_index).
 
--spec index(ne_list(A), pos_integer()) -> A.
+-spec index(ne_list(A), non_neg_integer()) -> A.
 index(L, I) when is_list(L), is_integer(I) -> index_(L,I);
 index(_, _) -> error(badarg).
 
--spec index_(ne_list(A), pos_integer()) -> A.
+-spec index_(ne_list(A), non_neg_integer()) -> A.
 index_(_, I) when I < 0 -> error(negative_index);
 index_([H|_], 0) -> H;
 index_([_|T], I) when I > 0 -> index_(T,I-1);
 index_([],_) -> error(index_too_large).
 
+-spec elem_index(A, [A]) -> maybe(non_neg_integer()).
+elem_index(El, L) when is_list(L) -> elem_index(El, L, 0);
+elem_index(_,_) -> error(badarg).
+
+-spec elem_index(A, [A], non_neg_integer()) -> maybe(non_neg_integer()).
+elem_index(El, [El|_], Idx) -> just(Idx);
+elem_index(El, [_|Tl], Idx) -> elem_index(El, Tl, Idx+1);
+elem_index(_, [], _) -> nothing().

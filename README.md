@@ -82,6 +82,7 @@ The following functions are implemented:
 
 ### Indexing lists
         index/2 (a.k.a '!!'/2)
+        elem_index/2
 
 ### Special lists
 #### "Set" operations

@@ -15,3 +15,12 @@ index_test_() ->
      tq(?FORALL(L, non_empty(list(int())),
                 l:index(L, length(L) - 1) == l:last(L)))
     ].
+
+elem_index_test_() ->
+    [?_assertEqual({just, 0}, l:elem_index(a, [a,b])),
+     ?_assertEqual({just, 1}, l:elem_index(b, [a,b])),
+     ?_assertEqual(nothing, l:elem_index(c, [a,b])),
+     ?_assertError(badarg, l:elem_index(a, little_lamb)),
+     tq(?FORALL(L, non_empty(list(int())),
+                {just, 0} == l:elem_index(hd(L), L)))
+    ].
