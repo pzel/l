@@ -24,3 +24,16 @@ elem_index_test_() ->
      tq(?FORALL(L, non_empty(list(int())),
                 {just, 0} == l:elem_index(hd(L), L)))
     ].
+
+elem_indices_test_() ->
+    [?_assertEqual([], l:elem_indices(a, [])),
+     ?_assertEqual([0], l:elem_indices(a, [a,b,c])),
+     ?_assertEqual([1,3,5], l:elem_indices($a, "banana")),
+     ?_assertError(badarg, l:elem_indices(elem, entary)),
+     tq(?FORALL({L1,L2,L3},
+                {list(pos_integer()), list(pos_integer()), list(pos_integer())},
+                [length(L1),
+                 length(L1) + 1 + length(L2),
+                 length(L1) + 1 + length(L2) + 1 + length(L3)]
+                == l:elem_indices(0, L1 ++ [0] ++ L2 ++ [0] ++ L3 ++ [0])))
+    ].

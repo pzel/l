@@ -61,6 +61,7 @@
         ,'!!'/2
         ,index/2 %% alias for '!!'/2
         ,elem_index/2
+        ,elem_indices/2
 
         ,delete/2
         ]).
@@ -454,3 +455,12 @@ elem_index(_,_) -> error(badarg).
 elem_index(El, [El|_], Idx) -> just(Idx);
 elem_index(El, [_|Tl], Idx) -> elem_index(El, Tl, Idx+1);
 elem_index(_, [], _) -> nothing().
+
+-spec elem_indices(A, [A]) -> [A].
+elem_indices(El, L) when is_list(L) -> elem_indices(El, L, [], 0);
+elem_indices(_, _) -> error(badarg).
+
+-spec elem_indices(A, [A], [non_neg_integer()], non_neg_integer()) -> [A].
+elem_indices(_, [], Acc, _) -> l:reverse(Acc);
+elem_indices(El, [El|Tl], Acc, Idx) -> elem_indices(El, Tl, [Idx|Acc], Idx+1);
+elem_indices(El, [_|Tl], Acc, Idx) -> elem_indices(El, Tl, Acc, Idx+1).
