@@ -17,12 +17,12 @@ index_test_() ->
     ].
 
 elem_index_test_() ->
-    [?_assertEqual({just, 0}, l:elem_index(a, [a,b])),
-     ?_assertEqual({just, 1}, l:elem_index(b, [a,b])),
-     ?_assertEqual(nothing, l:elem_index(c, [a,b])),
+    [?_assertEqual({0}, l:elem_index(a, [a,b])),
+     ?_assertEqual({1}, l:elem_index(b, [a,b])),
+     ?_assertEqual({}, l:elem_index(c, [a,b])),
      ?_assertError(badarg, l:elem_index(a, little_lamb)),
      tq(?FORALL(L, non_empty(list(int())),
-                {just, 0} == l:elem_index(hd(L), L)))
+                {0} == l:elem_index(hd(L), L)))
     ].
 
 elem_indices_test_() ->
@@ -39,18 +39,18 @@ elem_indices_test_() ->
     ].
 
 find_index_test_() ->
-    [?_assertEqual(nothing, l:find_index(const(true), [])),
-     ?_assertEqual(nothing, l:find_index(const(false), [])),
-     ?_assertEqual({just, 0}, l:find_index(id(), [true])),
-     ?_assertEqual({just, 1}, l:find_index(id(), [false,true])),
+    [?_assertEqual({}, l:find_index(const(true), [])),
+     ?_assertEqual({}, l:find_index(const(false), [])),
+     ?_assertEqual({0}, l:find_index(id(), [true])),
+     ?_assertEqual({1}, l:find_index(id(), [false,true])),
      ?_assertError(badarg, l:find_index(foo, [])),
      ?_assertError(badarg, l:find_index(id(), not_list)),
      tq(?FORALL({L, N},
                 {list(pos_integer()), pos_integer()},
-                {just, 0} == l:find_index(lt(0), [neg(N)|L]))),
+                {0} == l:find_index(lt(0), [neg(N)|L]))),
      tq(?FORALL({L, N},
                 {list(pos_integer()), pos_integer()},
-                {just, length(L)} ==
+                {length(L)} ==
                     l:find_index(lt(0), l:reverse([neg(N)|L]))))
     ].
 

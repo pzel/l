@@ -31,17 +31,17 @@ not_elem_test_() ->
 
 %% lookup/2
 lookup_test_() ->
-    [?_assertEqual(nothing, l:lookup(a, [])),
-     ?_assertEqual({just, b}, l:lookup(a, [{a,b}])),
+    [?_assertEqual({}, l:lookup(a, [])),
+     ?_assertEqual({b}, l:lookup(a, [{a,b}])),
      ?_assertError(badarg, l:lookup(a,fun()->foo end)),
 
      tq(?FORALL({Xs, NegK},
                 {list({pos_integer(), any()}), neg_integer()},
-                nothing == l:lookup(NegK, Xs))),
+                {} == l:lookup(NegK, Xs))),
 
      tq(?FORALL({Xs, NegK, Val},
                 {list({pos_integer(), any()}), neg_integer(), any()},
-                {just, Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])))
+                {Val} == l:lookup(NegK, Xs ++ [{NegK, Val}])))
     ].
 
 %%
@@ -50,16 +50,16 @@ lookup_test_() ->
 
 %% find/2
 find_test_() ->
-    [?_assertEqual(nothing, l:find(eq(a), [])),
-     ?_assertEqual({just, a}, l:find(eq(a), [a])),
+    [?_assertEqual({}, l:find(eq(a), [])),
+     ?_assertEqual({a}, l:find(eq(a), [a])),
      ?_assertError(badarg, l:find(notfun, [x])),
      ?_assertError(badarg, l:find(eq(1), notlist)),
 
      tq(?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
-                nothing == l:find(eq(NegK), Xs))),
+                {} == l:find(eq(NegK), Xs))),
 
      tq(?FORALL({Xs, NegK}, {list(pos_integer()), neg_integer()},
-                {just, NegK} == l:find(eq(NegK), Xs++[NegK])))
+                {NegK} == l:find(eq(NegK), Xs++[NegK])))
     ].
 
 %% filter/2

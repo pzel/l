@@ -69,17 +69,20 @@
 
 %% make dialyzer happy
 -export([just/1, nothing/0]).
+-export_type([maybe/1]).
 
 -type pred(A) :: fun((A)->boolean()).
 -type ne_list(A) :: [A,...].
 
--type maybe(A) :: {just, A} | nothing.
+-type maybe(A) :: {A} | {}.
 
--spec just(A) -> {just,A}.
-just(A) -> {just, A}.
+%% -spec just(A) -> maybe(A). % The true type
+-spec just(A) -> {A}.         % dialyzer's type
+just(A) -> {A}.
 
--spec nothing() -> nothing.
-nothing() -> nothing.
+%% -spec nothing() -> maybe(any()). % The true type
+-spec nothing() -> {}.              % dialyzer's type
+nothing() -> {}.
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
@@ -319,10 +322,10 @@ strip_prefix(P,L) when is_list(P), is_list(L) -> strip_prefix_(P,L);
 strip_prefix(_,_)                             -> error(badarg).
 
 -spec strip_prefix_([A],[A]) -> maybe(A).
-strip_prefix_(P,P)              -> {just, []};
-strip_prefix_([],L)             -> {just, L};
+strip_prefix_(P,P)              -> just([]);
+strip_prefix_([],L)             -> just(L);
 strip_prefix_([PH|PT], [PH|LT]) -> strip_prefix_(PT, LT);
-strip_prefix_(_,_)              -> nothing.
+strip_prefix_(_,_)              -> nothing().
 
 -spec group([A]) -> [[A]].
 group(L) when is_list(L) -> group_(L,[]);
@@ -401,9 +404,9 @@ lookup(K,V) when is_list(V) -> lookup_(K,V);
 lookup(_,_) -> error(badarg).
 
 -spec lookup_(A, [{A,B}]) -> maybe(B).
-lookup_(K,[{K,V}|_])      -> {just, V};
+lookup_(K,[{K,V}|_])      -> just(V);
 lookup_(K,[_|T])          -> lookup_(K, T);
-lookup_(_,[])             -> nothing.
+lookup_(_,[])             -> nothing().
 
 -spec find(pred(A), [A])                     -> maybe(A).
 find(P, L) when is_function(P,1), is_list(L) -> find_(P,L);
@@ -411,9 +414,9 @@ find(_,_)                                    -> error(badarg).
 
 -spec find_(pred(A), [A]) -> maybe(A).
 find_(P,[H|T]) ->
-    case P(H) of true     -> {just, H};
+    case P(H) of true     -> just(H);
                  false    -> find_(P, T) end;
-find_(_,[])               -> nothing.
+find_(_,[])               -> nothing().
 
 -spec filter(pred(A),[A])                      -> [A].
 filter(P, L) when is_function(P,1), is_list(L) -> filter_(P, L);
