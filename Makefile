@@ -41,7 +41,7 @@ endif
 
 
 all: deps compile dialyzer test
-sure: compile dialyzer test check_cover
+sure: compile dialyzer test assert_full_coverage
 
 # =============================================================================
 # Rules to build the system
@@ -58,7 +58,7 @@ update-deps:
 compile:
 	$(REBAR) skip_deps=true compile
 
-check_cover:
+assert_full_coverage:
 	@grep --quiet "<tr><td><a href='l.COVER.html'>l</a></td><td>100%</td>" $(EUNIT_INDEX)
 
 doc:

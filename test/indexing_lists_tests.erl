@@ -1,7 +1,7 @@
 -module(indexing_lists_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
--import(helpers, [tq/1]).
+-import(helpers, [tq/1, const/1, id/0]).
 
 '!!_test_'() ->
     [?_assertEqual(a,  l:'!!'([a,b], 0))].
@@ -37,3 +37,23 @@ elem_indices_test_() ->
                  length(L1) + 1 + length(L2) + 1 + length(L3)]
                 == l:elem_indices(0, L1 ++ [0] ++ L2 ++ [0] ++ L3 ++ [0])))
     ].
+
+find_index_test_() ->
+    [?_assertEqual(nothing, l:find_index(const(true), [])),
+     ?_assertEqual(nothing, l:find_index(const(false), [])),
+     ?_assertEqual({just, 0}, l:find_index(id(), [true])),
+     ?_assertEqual({just, 1}, l:find_index(id(), [false,true])),
+     ?_assertError(badarg, l:find_index(foo, [])),
+     ?_assertError(badarg, l:find_index(id(), not_list)),
+     tq(?FORALL({L, N},
+                {list(pos_integer()), pos_integer()},
+                {just, 0} == l:find_index(lt(0), [neg(N)|L]))),
+     tq(?FORALL({L, N},
+                {list(pos_integer()), pos_integer()},
+                {just, length(L)} ==
+                    l:find_index(lt(0), l:reverse([neg(N)|L]))))
+    ].
+
+
+lt(X) -> fun(Y) -> Y < X end.
+neg(X) -> X * -1.

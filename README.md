@@ -84,6 +84,7 @@ The following functions are implemented:
         index/2 (a.k.a '!!'/2)
         elem_index/2
         elem_indices/2
+        find_index/2
 
 ### Special lists
 #### "Set" operations
@@ -109,7 +110,7 @@ written before the functions are actually implemented, but may be incomplete.
 Code coverage doesn't drop below 100%.
 
 
-###0.2 – All functions typed, documented, and exhaustively tested 
+###0.2 – All functions typed, documented, and exhaustively tested
 
 At this stage, the module should be verfifed correct to a great
 extent. The source will be annotated, and generated documentation available.

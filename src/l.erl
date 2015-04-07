@@ -62,6 +62,7 @@
         ,index/2 %% alias for '!!'/2
         ,elem_index/2
         ,elem_indices/2
+        ,find_index/2
 
         ,delete/2
         ]).
@@ -464,3 +465,14 @@ elem_indices(_, _) -> error(badarg).
 elem_indices(_, [], Acc, _) -> l:reverse(Acc);
 elem_indices(El, [El|Tl], Acc, Idx) -> elem_indices(El, Tl, [Idx|Acc], Idx+1);
 elem_indices(El, [_|Tl], Acc, Idx) -> elem_indices(El, Tl, Acc, Idx+1).
+
+-spec find_index(pred(A), [A]) -> maybe(non_neg_integer()).
+find_index(P, L) when is_function(P,1), is_list(L) ->
+    find_index_(P, L, 0);
+find_index(_,_) -> error(badarg).
+
+-spec find_index_(pred(A), [A], non_neg_integer()) -> maybe(non_neg_integer()).
+find_index_(_,[],_) -> nothing();
+find_index_(P,[H|T], I) ->
+    case P(H) of true -> just(I);
+                 false -> find_index_(P, T, I+1) end.
