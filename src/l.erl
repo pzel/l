@@ -78,26 +78,15 @@
         ,delete/2
         ]).
 
-%% make dialyzer happy
--export([just/1, nothing/0]).
--export_type([maybe/1]).
-
 -type pred(A) :: fun((A)->boolean()).
 -type ne_list(A) :: [A,...].
 -type idx() :: non_neg_integer().
 -type count() :: non_neg_integer().
-
--type maybe(A) :: {A} | {}.
+-type maybe(A) :: maybe:maybe(A).
 
 -define(is_pred(F), is_function(F, 1)).
+-import(maybe, [just/1, nothing/0]).
 
-%% -spec just(A) -> maybe(A). % The true type
--spec just(A) -> {A}.         % dialyzer's type
-just(A) -> {A}.
-
-%% -spec nothing() -> maybe(any()). % The true type
--spec nothing() -> {}.              % dialyzer's type
-nothing() -> {}.
 
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
