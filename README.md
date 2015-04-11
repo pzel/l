@@ -47,6 +47,7 @@ The following functions are implemented:
         minimum/1
 
 ### Infinite lists
+        iterate/3
         replicate/2
 
 ### Sublists

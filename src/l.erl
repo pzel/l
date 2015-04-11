@@ -32,6 +32,7 @@
         ,maximum/1
         ,minimum/1
 
+        ,iterate/3
         ,replicate/2
 
         ,take/2
@@ -84,6 +85,7 @@
 -type pred(A) :: fun((A)->boolean()).
 -type ne_list(A) :: [A,...].
 -type idx() :: non_neg_integer().
+-type count() :: non_neg_integer().
 
 -type maybe(A) :: {A} | {}.
 
@@ -240,6 +242,15 @@ maximum(_)                 -> error(badarg).
 -spec minimum(ne_list(A))  -> A.
 minimum(L) when is_list(L) -> foldr(fun erlang:min/2, L);
 minimum(_)                 -> error(badarg).
+
+-spec iterate(count(), fun((A)->B), A) -> [B].
+iterate(N,F,Init) when is_function(F,1), is_integer(N), N >= 0 ->
+    iterate_(N,F,Init,[]);
+iterate(_,_,_) -> error(badarg).
+
+-spec iterate_(count(), fun((A)->B), A, [B]) -> [B].
+iterate_(0, _Fun, _V, Acc) -> reverse(Acc);
+iterate_(N, Fun, V, Acc) -> iterate_(N-1, Fun, Fun(V), [V|Acc]).
 
 -spec replicate(idx(),A)    -> [A].
 replicate(N,X) when is_integer(N), N>=0 -> replicate_(N,X,[]);
