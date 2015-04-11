@@ -85,6 +85,11 @@ The following functions are implemented:
         elem_index/2
         elem_indices/2
         find_index/2
+        find_indices/2
+
+### Zipping and unzipping lists
+        zip/2
+        zip_with/3
 
 ### Special lists
 #### "Set" operations

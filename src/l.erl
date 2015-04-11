@@ -65,6 +65,9 @@
         ,find_index/2
         ,find_indices/2
 
+        ,zip/2
+        ,zip_with/3
+
         ,delete/2
         ]).
 
@@ -492,3 +495,20 @@ find_indices_(_,[],_,Acc) -> l:reverse(Acc);
 find_indices_(P,[H|T],Idx,Acc) ->
     case P(H) of true -> find_indices_(P, T, Idx+1, [Idx|Acc]);
                  false -> find_indices_(P, T, Idx+1, Acc) end.
+
+-spec zip([A], [B]) -> [{A,B}].
+zip(L,R) when is_list(L), is_list(R) ->
+    zip_with_(fun l_zips:tup/2, L, R, []);
+zip(_,_) -> error(badarg).
+
+-spec zip_with(fun((A,B) -> C), [A], [B]) -> [C].
+zip_with(F,L,R) when
+      is_list(L), is_list(R), is_function(F,2) ->
+    zip_with_(F,L,R,[]);
+zip_with(_,_,_) -> error(badarg).
+
+-spec zip_with_(fun((A,B) -> C), [A], [B], [C]) -> [C].
+zip_with_(_, [], _, Acc) -> l:reverse(Acc);
+zip_with_(_, _, [], Acc) -> l:reverse(Acc);
+zip_with_(F, [L|Ls], [R|Rs], Acc) ->
+    zip_with_(F, Ls, Rs, [F(L,R) | Acc]).
