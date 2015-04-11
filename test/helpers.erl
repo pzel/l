@@ -6,7 +6,8 @@
 -export([const/1,
          id/0]).
 -export([matrix/1,
-        short_list/1]).
+         function/2,
+         short_list/1]).
 -export([factorial/1]).
 
 tq(Prop) -> ?_assert(triq:check(Prop,[],20)).
@@ -18,6 +19,9 @@ const(X) -> fun(_) -> X end.
 id() -> fun(X) -> X end.
 
 %% Type generators
+
+function(A,B) ->
+    dom_fun:function(A, B).
 
 matrix(T) ->
     ?LET({Width, Height}, {pos_integer(), pos_integer()},

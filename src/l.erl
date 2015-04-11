@@ -67,6 +67,8 @@
 
         ,zip/2
         ,zip_with/3
+        ,zip3/3
+        ,zip_with3/4
 
         ,delete/2
         ]).
@@ -512,3 +514,21 @@ zip_with_(_, [], _, Acc) -> l:reverse(Acc);
 zip_with_(_, _, [], Acc) -> l:reverse(Acc);
 zip_with_(F, [L|Ls], [R|Rs], Acc) ->
     zip_with_(F, Ls, Rs, [F(L,R) | Acc]).
+
+-spec zip3([A], [B], [C]) -> [{A,B,C}].
+zip3(A,B,C) when is_list(A), is_list(B), is_list(C) ->
+    zip_with3_(fun l_zips:tup/3, A, B, C, []);
+zip3(_,_,_) -> error(badarg).
+
+-spec zip_with3(fun((A,B,C)->D),[A],[B],[C]) -> [D].
+zip_with3(F,A,B,C) when
+      is_list(A), is_list(B), is_list(C), is_function(F,3) ->
+    zip_with3_(F,A,B,C,[]);
+zip_with3(_,_,_,_) -> error(badarg).
+
+-spec zip_with3_(fun((A,B,C) -> D),[A],[B],[C],[D]) -> [D].
+zip_with3_(_, [], _, _, Acc) -> l:reverse(Acc);
+zip_with3_(_, _, [], _, Acc) -> l:reverse(Acc);
+zip_with3_(_, _, _, [], Acc) -> l:reverse(Acc);
+zip_with3_(F, [A|As], [B|Bs], [C|Cs], Acc) ->
+    zip_with3_(F, As, Bs, Cs, [F(A,B,C) | Acc]).

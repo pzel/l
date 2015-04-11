@@ -3,9 +3,8 @@
 %% TODO implement & pull request
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
--import(helpers, [tq/1]).
+-import(helpers, [tq/1, function/2]).
 
-function(A,B) -> dom_fun:function(A, B).
 
 %%
 %%  Reducing lists (folds) tests

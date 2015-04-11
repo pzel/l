@@ -22,4 +22,17 @@ zip_with_test_() ->
       ?_assertError(badarg, l:zip_with(fun(X) -> X end, [], []))
     ].
 
+zip3_to_zipX_test_() ->
+    %% todo: generate me,
+    [ ?_assertEqual([{1,2,3}], l:zip3([1], [2], [3])),
+      ?_assertEqual([], l:zip3([], [2], [3])),
+      ?_assertEqual([], l:zip3([1], [], [3])),
+      ?_assertEqual([], l:zip3([1], [2], [])),
+      ?_assertError(badarg, l:zip3(hello, [2], [3])),
+      ?_assertEqual([3,6,9], l:zip_with3(fun add/3, [1,2,3], [1,2,3], [1,2,3])),
+      ?_assertError(badarg, l:zip_with3(fun add/2, [1,2,3], [1,2,3], [1,2,3]))
+    ].
+
+
 add(A,B) -> A + B.
+add(A,B,C) -> A + B + C.

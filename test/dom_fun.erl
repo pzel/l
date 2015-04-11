@@ -11,6 +11,10 @@ function(InputTypes, OutputType) ->
 neg_integer() ->
     ?LET(I, pos_integer(), return(-1 * I)).
 
-fun_from_input([_,_,_], ReturnVal) -> fun(_,_,_) -> ReturnVal end;
-fun_from_input([_,_], ReturnVal) -> fun(_,_) -> ReturnVal end;
-fun_from_input(_, ReturnVal) -> fun(_) -> ReturnVal end.
+fun_from_input([_,_,_,_,_,_,_], ReturnVal) -> fun(_,_,_,_,_,_,_) -> ReturnVal end;
+fun_from_input([_,_,_,_,_,_], ReturnVal)   -> fun(_,_,_,_,_,_) -> ReturnVal end;
+fun_from_input([_,_,_,_,_], ReturnVal)     -> fun(_,_,_,_,_) -> ReturnVal end;
+fun_from_input([_,_,_,_], ReturnVal)       -> fun(_,_,_,_) -> ReturnVal end;
+fun_from_input([_,_,_], ReturnVal)         -> fun(_,_,_) -> ReturnVal end;
+fun_from_input([_,_], ReturnVal)           -> fun(_,_) -> ReturnVal end;
+fun_from_input(_, ReturnVal)               -> fun(_) -> ReturnVal end.
