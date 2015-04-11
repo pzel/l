@@ -89,7 +89,12 @@ The following functions are implemented:
 
 ### Zipping and unzipping lists
         zip/2
-        zip_with/3
+        zip_with/3,
+        zip3/3,
+        zip_with3/4,
+        unzip/1
+        unzip3/1
+
 
 ### Special lists
 #### "Set" operations

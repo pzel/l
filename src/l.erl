@@ -70,6 +70,9 @@
         ,zip3/3
         ,zip_with3/4
 
+        ,unzip/1
+        ,unzip3/1
+
         ,delete/2
         ]).
 
@@ -532,3 +535,19 @@ zip_with3_(_, _, [], _, Acc) -> l:reverse(Acc);
 zip_with3_(_, _, _, [], Acc) -> l:reverse(Acc);
 zip_with3_(F, [A|As], [B|Bs], [C|Cs], Acc) ->
     zip_with3_(F, As, Bs, Cs, [F(A,B,C) | Acc]).
+
+-spec unzip([{A,B}]) -> {[A],[B]}.
+unzip(L) when is_list(L) -> unzip_(L, {[], []});
+unzip(_) -> error(badarg).
+
+-spec unzip_([{A,B}], {[A],[B]}) -> {[A],[B]}.
+unzip_([], {Acc, Bcc}) -> {l:reverse(Acc), l:reverse(Bcc)};
+unzip_([{A,B}|Tl], {Acc, Bcc}) -> unzip_(Tl, { [A|Acc], [B|Bcc] }).
+
+-spec unzip3([{A,B,C}]) -> {[A],[B],[C]}.
+unzip3(L) when is_list(L) -> unzip3_(L, {[],[],[]});
+unzip3(_) -> error(badarg).
+
+-spec unzip3_([{A,B,C}], {[A],[B],[C]}) -> {[A],[B],[C]}.
+unzip3_([], {Acc,Bcc,Ccc}) -> {l:reverse(Acc), l:reverse(Bcc), l:reverse(Ccc)};
+unzip3_([{A,B,C}|Tl], {Acc,Bcc,Ccc}) -> unzip3_(Tl, {[A|Acc],[B|Bcc],[C|Ccc]}).
