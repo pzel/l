@@ -73,6 +73,7 @@
         ,unzip/1
         ,unzip3/1
 
+        ,nub/1
         ,delete/2
         ]).
 
@@ -176,6 +177,17 @@ foldl(_,_,_)                             -> error(badarg).
 foldl(_, [])                              -> error(badarg);
 foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
 foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
+
+-spec nub([A]) -> [A].
+nub(L) when is_list(L) -> nub_(L, []);
+nub(_) -> error(badarg).
+
+-spec nub_([A],[A]) -> [A].
+nub_([], Acc) -> l:reverse(Acc);
+nub_([H|T], Acc) ->
+    case l:elem(H,Acc) of true -> nub_(T, Acc);
+                          false -> nub_(T, [H|Acc]) end.
+
 
 -spec delete(A,[A]) -> [A].
 delete(X,Xs)        -> delete_(X,Xs,[]).

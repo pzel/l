@@ -1,7 +1,7 @@
 -module(set_operations_tests).
 -include_lib("eunit/include/eunit.hrl").
 -include_lib("triq/include/triq.hrl").
--import(helpers, [tq/1]).
+-include_lib("helpers.hrl").
 
 
 %%
@@ -18,8 +18,14 @@ delete_test_() ->
      ].
 
 delete_in_empty_list_test_() ->
-    tq(?FORALL(X, int(),
-               l:delete(X, []) == [])).
+    ?_forall(X, int(), l:delete(X, []) == []).
 delete_cons_test_() ->
-    tq(?FORALL({X,Xs}, {int(), list(int())},
-               l:delete(X, [X|Xs]) == Xs)).
+    ?_forall({X,Xs}, {int(), list(int())}, l:delete(X, [X|Xs]) == Xs).
+
+
+nub_test_() ->
+    [ ?_assertError(badarg, l:nub(notlist)),
+      ?_assertEqual([], l:nub([])),
+      ?_assertEqual([1], l:nub([1,1])),
+      ?_assertEqual([1,2], l:nub([1,2,1,2,1,2,1]))
+    ].

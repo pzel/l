@@ -98,6 +98,7 @@ The following functions are implemented:
 
 ### Special lists
 #### "Set" operations
+         nub/1
          delete/2
 
 Project roadmap
