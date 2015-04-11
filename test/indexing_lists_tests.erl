@@ -55,6 +55,18 @@ find_index_test_() ->
                  l:find_index(lt(0), l:reverse([neg(N)|L])))
     ].
 
+find_indices_test_() ->
+    [?_assertEqual([], l:find_indices(const(true), [])),
+     ?_assertEqual([], l:find_indices(const(false), [])),
+     ?_assertEqual([0], l:find_indices(lt(1), [0,1])),
+     ?_assertEqual([0,1], l:find_indices(lt(1), [0,0,1])),
+     ?_assertEqual([0,2], l:find_indices(lt(0), [-1,0,-1])),
+     ?_assertError(badarg, l:find_indices(not_fun, [])),
+     ?_assertError(badarg, l:find_indices(const(true), not_list))
+
+     %% todo come up with properties
+    ].
+
 
 lt(X) -> fun(Y) -> Y < X end.
 neg(X) -> X * -1.

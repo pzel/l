@@ -63,6 +63,7 @@
         ,elem_index/2
         ,elem_indices/2
         ,find_index/2
+        ,find_indices/2
 
         ,delete/2
         ]).
@@ -73,8 +74,11 @@
 
 -type pred(A) :: fun((A)->boolean()).
 -type ne_list(A) :: [A,...].
+-type idx() :: non_neg_integer().
 
 -type maybe(A) :: {A} | {}.
+
+-define(is_pred(F), is_function(F, 1)).
 
 %% -spec just(A) -> maybe(A). % The true type
 -spec just(A) -> {A}.         % dialyzer's type
@@ -103,7 +107,7 @@ init(L)         -> l:reverse(l:tail(l:reverse(L))).
 null([])           -> true;
 null([_|_])        -> false.
 
--spec length(list()) -> non_neg_integer().
+-spec length(list()) -> idx().
 length(L)            -> erlang:length(L).
 
 -spec map(fun((A)->B),[A]) -> [B].
@@ -193,17 +197,15 @@ concat_map(F, L) when is_function(F) -> concat(map(F, L)).
 'or'([false|Rest])          -> 'or'(Rest);
 'or'(_)                     -> error(badarg).
 
--spec any(pred(A),[A])            -> boolean().
-any(F,[])    when is_function(F,1) -> false;
-any(F,[H|T]) when is_function(F,1) ->
-    F(H) orelse any(F, T);
-any(_,_)                           -> error(badarg).
+-spec any(pred(A),[A])        -> boolean().
+any(P,[])    when ?is_pred(P) -> false;
+any(P,[H|T]) when ?is_pred(P) -> P(H) orelse any(P, T);
+any(_,_)                      -> error(badarg).
 
--spec all(pred(A),[A])            -> boolean().
-all(F,[])    when is_function(F,1) -> true;
-all(F,[H|T]) when is_function(F,1) ->
-    F(H) andalso all(F, T);
-all(_,_)                           -> error(badarg).
+-spec all(pred(A),[A])        -> boolean().
+all(P,[])    when ?is_pred(P) -> true;
+all(P,[H|T]) when ?is_pred(P) -> P(H) andalso all(P, T);
+all(_,_)                      -> error(badarg).
 
 -spec sum([A]) -> A.
 sum(L)         -> fold(fun erlang:'+'/2, 0, L).
@@ -219,11 +221,11 @@ maximum(_)                 -> error(badarg).
 minimum(L) when is_list(L) -> foldr(fun erlang:min/2, L);
 minimum(_)                 -> error(badarg).
 
--spec replicate(non_neg_integer(),A)    -> [A].
+-spec replicate(idx(),A)    -> [A].
 replicate(N,X) when is_integer(N), N>=0 -> replicate_(N,X,[]);
 replicate(N,_) when is_integer(N), N<0  -> error(badarg).
 
--spec replicate_(non_neg_integer(),A,[A]) -> [A].
+-spec replicate_(idx(),A,[A]) -> [A].
 replicate_(0,_,Acc)                       -> Acc;
 replicate_(N,X,Acc)                       -> replicate_(N-1,X,[X|Acc]).
 
@@ -258,7 +260,7 @@ split_at_(N, [H|T], {Pre, []})                       -> split_at_(N-1, T, {[H|Pr
 
 -spec take_while(pred(A),[A]) -> [A].
 take_while(P, L) when
-      is_function(P,1),is_list(L) -> take_while_(P, L, []);
+      ?is_pred(P),is_list(L) -> take_while_(P, L, []);
 take_while(_, _)                  -> error(badarg).
 
 -spec take_while_(pred(A),[A],[A]) -> [A].
@@ -270,7 +272,7 @@ take_while_(P, [H|T], Acc) ->
 
 -spec drop_while(pred(A),[A]) -> [A].
 drop_while(P, L) when
-      is_function(P,1),is_list(L) -> drop_while_(P, L);
+      ?is_pred(P),is_list(L) -> drop_while_(P, L);
 drop_while(_,_)                   -> error(badarg).
 
 -spec drop_while_(pred(A),[A]) -> [A].
@@ -282,7 +284,7 @@ drop_while_(P, [H|T]) ->
 
 -spec drop_while_end(pred(A),[A]) -> [A].
 drop_while_end(P,L) when
-      is_list(L), is_function(P,1) -> drop_while_end_(P,L,[],[]);
+      is_list(L), ?is_pred(P) -> drop_while_end_(P,L,[],[]);
 drop_while_end(_,_)                -> error(badarg).
 
 -spec drop_while_end_(pred(A),[A],[A],[A]) -> [A].
@@ -295,7 +297,7 @@ drop_while_end_(P,[H|T],V,Q) ->
 
 -spec span(pred(A), [A]) -> {[A], [A]}.
 span(P,L) when
-      is_list(L), is_function(P,1) -> span_(P,L,[]);
+      is_list(L), ?is_pred(P) -> span_(P,L,[]);
 span(_,_) -> error(badarg).
 
 -spec span_(pred(A), [A], [A]) -> {[A], [A]}.
@@ -307,7 +309,7 @@ span_(_,[],Acc) -> {reverse(Acc),[]}.
 
 -spec break(pred(A), [A]) -> {[A], [A]}.
 break(P,L) when
-      is_list(L), is_function(P,1) -> break_(P,L,[]);
+      is_list(L), ?is_pred(P) -> break_(P,L,[]);
 break(_,_) -> error(badarg).
 
 -spec break_(pred(A), [A], [A]) -> {[A], [A]}.
@@ -409,7 +411,7 @@ lookup_(K,[_|T])          -> lookup_(K, T);
 lookup_(_,[])             -> nothing().
 
 -spec find(pred(A), [A])                     -> maybe(A).
-find(P, L) when is_function(P,1), is_list(L) -> find_(P,L);
+find(P, L) when ?is_pred(P), is_list(L) -> find_(P,L);
 find(_,_)                                    -> error(badarg).
 
 -spec find_(pred(A), [A]) -> maybe(A).
@@ -419,14 +421,14 @@ find_(P,[H|T]) ->
 find_(_,[])               -> nothing().
 
 -spec filter(pred(A),[A])                      -> [A].
-filter(P, L) when is_function(P,1), is_list(L) -> filter_(P, L);
+filter(P, L) when ?is_pred(P), is_list(L) -> filter_(P, L);
 filter(_,_)                                    -> error(badarg).
 
 -spec filter_(pred(A),[A]) -> [A].
 filter_(F, Xs)             -> [ X || X <- Xs, F(X) == true ].
 
 -spec partition(pred(A), [A])                    -> {[A], [A]}.
-partition(P,L) when is_function(P,1), is_list(L) -> partition_(P,L, {[], []});
+partition(P,L) when ?is_pred(P), is_list(L) -> partition_(P,L, {[], []});
 partition(_,_)                                   -> error(badarg).
 
 -spec partition_(pred(A), [A], {[A], [A]}) -> {[A], [A]}.
@@ -435,27 +437,27 @@ partition_(P,[H|T],{Trues, Falses}) ->
     case P(H) of true -> partition_(P, T, {[H|Trues], Falses});
                  false -> partition_(P, T, {Trues, [H|Falses]}) end.
 
--spec '!!'(ne_list(A), non_neg_integer()) -> A.
+-spec '!!'(ne_list(A), idx()) -> A.
 '!!'(L, Idx) -> l:index(L, Idx).
 
 %% '!!'(_, 0) -> error(index_too_large);
 %% '!!'(_,I) when I < 0 -> error(negative_index).
 
--spec index(ne_list(A), non_neg_integer()) -> A.
+-spec index(ne_list(A), idx()) -> A.
 index(L, I) when is_list(L), is_integer(I) -> index_(L,I);
 index(_, _) -> error(badarg).
 
--spec index_(ne_list(A), non_neg_integer()) -> A.
+-spec index_(ne_list(A), idx()) -> A.
 index_(_, I) when I < 0 -> error(negative_index);
 index_([H|_], 0) -> H;
 index_([_|T], I) when I > 0 -> index_(T,I-1);
 index_([],_) -> error(index_too_large).
 
--spec elem_index(A, [A]) -> maybe(non_neg_integer()).
+-spec elem_index(A, [A]) -> maybe(idx()).
 elem_index(El, L) when is_list(L) -> elem_index(El, L, 0);
 elem_index(_,_) -> error(badarg).
 
--spec elem_index(A, [A], non_neg_integer()) -> maybe(non_neg_integer()).
+-spec elem_index(A, [A], idx()) -> maybe(idx()).
 elem_index(El, [El|_], Idx) -> just(Idx);
 elem_index(El, [_|Tl], Idx) -> elem_index(El, Tl, Idx+1);
 elem_index(_, [], _) -> nothing().
@@ -464,18 +466,29 @@ elem_index(_, [], _) -> nothing().
 elem_indices(El, L) when is_list(L) -> elem_indices(El, L, [], 0);
 elem_indices(_, _) -> error(badarg).
 
--spec elem_indices(A, [A], [non_neg_integer()], non_neg_integer()) -> [A].
+-spec elem_indices(A, [A], [idx()], idx()) -> [A].
 elem_indices(_, [], Acc, _) -> l:reverse(Acc);
 elem_indices(El, [El|Tl], Acc, Idx) -> elem_indices(El, Tl, [Idx|Acc], Idx+1);
 elem_indices(El, [_|Tl], Acc, Idx) -> elem_indices(El, Tl, Acc, Idx+1).
 
--spec find_index(pred(A), [A]) -> maybe(non_neg_integer()).
-find_index(P, L) when is_function(P,1), is_list(L) ->
+-spec find_index(pred(A), [A]) -> maybe(idx()).
+find_index(P, L) when ?is_pred(P), is_list(L) ->
     find_index_(P, L, 0);
 find_index(_,_) -> error(badarg).
 
--spec find_index_(pred(A), [A], non_neg_integer()) -> maybe(non_neg_integer()).
+-spec find_index_(pred(A), [A], idx()) -> maybe(idx()).
 find_index_(_,[],_) -> nothing();
 find_index_(P,[H|T], I) ->
     case P(H) of true -> just(I);
                  false -> find_index_(P, T, I+1) end.
+
+-spec find_indices(pred(A), [A]) -> [idx()].
+find_indices(P,L) when ?is_pred(P), is_list(L) ->
+    find_indices_(P,L,0,[]);
+find_indices(_,_) -> error(badarg).
+
+-spec find_indices_(pred(A), [A], idx(), [idx()]) -> [idx()].
+find_indices_(_,[],_,Acc) -> l:reverse(Acc);
+find_indices_(P,[H|T],Idx,Acc) ->
+    case P(H) of true -> find_indices_(P, T, Idx+1, [Idx|Acc]);
+                 false -> find_indices_(P, T, Idx+1, Acc) end.

@@ -1,0 +1,1 @@
+-define(forall(A,B,C), ?_assert(triq:check(?FORALL(A,B,C)))).
