@@ -94,16 +94,16 @@
 -spec append(list(), list()) -> list().
 append(L1,L2)                -> L1 ++ L2.
 
--spec head([A]) -> A | none().
+-spec head([A]) -> A.
 head(L)         -> erlang:hd(L).
 
--spec last([A]) -> A | none().
+-spec last([A]) -> A.
 last(L)         -> l:head(l:reverse(L)).
 
--spec tail([A]) -> [A] | none().
+-spec tail([A]) -> [A].
 tail(L)         -> erlang:tl(L).
 
--spec init([A]) -> [A] | none().
+-spec init([A]) -> [A].
 init(L)         -> l:reverse(l:tail(l:reverse(L))).
 
 -spec null(list()) -> boolean().
