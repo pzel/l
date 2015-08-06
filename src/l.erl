@@ -199,7 +199,8 @@ delete_(_,[],Acc)        -> reverse(Acc).
 -spec concat([[A]])              -> [A].
 concat([])                       -> [];
 concat([L]) when is_list(L)      -> L;
-concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS)).
+concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS));
+concat(_)                        -> error(badarg).
 
 -spec concat_map(fun((A)->[B]),[A])  -> [B].
 concat_map(F, L) when is_function(F) -> concat(map(F, L)).

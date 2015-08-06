@@ -14,6 +14,7 @@ concat_test_() ->
      ?_assertEqual("a",   l:concat(["a"])),
      ?_assertEqual("ab",  l:concat(["a", "b"])),
      ?_assertEqual("abc", l:concat(["a", "b", "c"])),
+     ?_assertError(badarg, l:concat(["a", "b", notlist])),
 
      tq(?FORALL(Xs, list(non_empty(list(int()))),
                 l:length(l:concat(Xs)) == l:sum(l:map(fun l:length/1, Xs))))
