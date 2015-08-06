@@ -17,8 +17,8 @@ manipulation in random places in the codebase. Helper functions smell, and the
 remedy is code removal via better abstractions.
 
 
-Basic functions
----------------
+
+### Basic functions
 
 #### append(list(), list()) -> list().
 
@@ -28,6 +28,7 @@ Take two lists (L1,L2)  and glue L2 to the end of L1.
 
 
 #### head ([A]) -> A.
+
 Return the first element of a non-empty list.
 
     a = l:head([a,b,c]).  
@@ -35,6 +36,7 @@ Return the first element of a non-empty list.
 
 
 #### last ([A]) -> A.
+
 Return the last element of a non-empty list.
 
     c = l:last([a,b,c]).  
@@ -42,13 +44,16 @@ Return the last element of a non-empty list.
 
 
 #### tail ([A]) -> [A].
+
 Return everything but the head of a non-empty list.
 
     [b,c] = l:tail([a,b,c]).
     [] = l:tail([1]).
     {'EXIT',{badarg,_}} = (catch l:tail([])).
 
+
 #### init ([A]) -> [A].
+
 Return everything *but* the last element of a non-empty list.
 
     [a,b] = l:init([a,b,c]).
@@ -56,13 +61,16 @@ Return everything *but* the last element of a non-empty list.
 
 
 #### null (list()) -> boolean().
+
 Answer the question: "is this an empty list?"
 
     false = l:null([a,b,c]).
     true = l:null([]).
     {'EXIT',{badarg,_}} = (catch l:null([])).
 
+
 #### length (list()) -> non\_neg\_integer().
+
 Return the length of the list.
 
     3 = l:length([a,b,c]).
@@ -72,13 +80,81 @@ Return the length of the list.
 
 
 ### List transformations
-        map/2
-        reverse/1
-        intersperse/2
-        intercalate/2
-        transpose/1
-        subsequences/1
-        permutations/1
+
+#### map (fun((A)->B), [A]) -> [B].
+
+Create a new list by applying the function to every element of the argument list.
+
+    Add1 = fun(I) -> I + 1 end.
+    [2,3,4] = l:map(Add1, [1,2,3]).
+
+    BadFun = fun(X,Y) -> X + Y end.
+    {'EXIT', {{badarity, _},_}} = (catch l:map(BadFun, [1,2,3])).
+
+    [] = l:map(Add1, []).
+
+
+#### reverse ([A]) -> [A].
+
+Reverse the elements of the list.
+
+    [c,b,a] = l:reverse([a,b,c]).
+    [] = l:reverse([]).
+    {'EXIT',{badarg,_}} = (catch l:reverse(not_list)).
+
+
+#### intersperse (A, [A]) -> [A].
+
+Place the single element A in between all elements of [A].
+
+    [] = l:intersperse(z, []).
+    [a] = l:intersperse(z, [a]).
+    [a,z,b] = l:intersperse(z, [a,b]).
+    [a,z,b,z,c] = l:intersperse(z, [a,b,c]).
+
+    {'EXIT',{badarg,_}} = (catch l:intersperse(z, not_list)).
+
+
+#### intercalate ([A], [[A]]) -> [A].
+
+Connect the lists in the second argument using the list in the first argument.
+
+    [] = l:intercalate([] , [[], []]).
+    [1,0] = l:intercalate([0] , [[1],[]]).
+    [1,0,1] = l:intercalate([0] , [[1],[1]]).
+    "apple_banana" = l:intercalate("_" , ["apple", "banana"]).
+    {'EXIT',{badarg,_}} = (catch l:intercalate([0], [[1], notlist])).
+    {'EXIT',{badarg,_}} = (catch l:intercalate(notlist, [[1],[2]])).
+
+
+#### transpose ([[A]]) -> ([[A]]).
+
+Transpose the rows and columns of the argument. The lengths of the sublists
+must be the same.
+
+    [[1,2,3], [1,2,3]] = l:transpose([[1,1], [2,2], [3,3]]).
+    [[1,1], [2,2]] = l:transpose(l:transpose([[1,1], [2,2]])).
+    
+#### subsequences([A]) -> [[A]].
+
+List all the possible sublists of the argument list. Element ordering does not
+matter, i.e. all possible subsets of the elements in the list will be returned.
+
+    [[]] = l:subsequences([]).
+    [[], [a]] = l:subsequences([a]).
+    [[],[c],[b],[b,c],[a],[a,c],[a,b],[a,b,c]] = l:subsequences([a,b,c]).
+    {'EXIT',{badarg,_}} = (catch l:subsequences(notlist)).
+
+#### permutations([A]) -> [[A]].
+
+List all the possible orderings of the given list.
+
+    [[]] = l:permutations([]).
+    [[a]] = l:permutations([a]).
+    [[a,b,c],[a,c,b],[b,a,c],[b,c,a],[c,a,b],[c,b,a]] = l:permutations([a,b,c]).
+    {'EXIT',{badarg,_}} = (catch l:permutations(notlist)).
+
+
 
 ### Reducing lists (folds)
         foldr/3
