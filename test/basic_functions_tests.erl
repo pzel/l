@@ -65,7 +65,8 @@ init_is_rev_tl_rev_test_() ->
 %% null/1
 null_test_() ->
     [?_assertEqual(true, l:null([])),
-     ?_assertEqual(true, l:null(""))
+     ?_assertEqual(true, l:null("")),
+     ?_assertError(badarg, l:null(not_a_list))
     ].
 null_of_nonempty_is_false_test_() ->
     tq(?FORALL(Xs, non_empty(list(any())),

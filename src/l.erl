@@ -108,7 +108,8 @@ init(L)         -> l:reverse(l:tail(l:reverse(L))).
 
 -spec null(list()) -> boolean().
 null([])           -> true;
-null([_|_])        -> false.
+null([_|_])        -> false;
+null(_)            -> error(badarg).
 
 -spec length(list()) -> idx().
 length(L)            -> erlang:length(L).
