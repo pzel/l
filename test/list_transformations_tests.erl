@@ -32,7 +32,8 @@ reverse_twice_is_id_test_() ->
 intersperse_test_() ->
     [?_assertEqual([],      l:intersperse(0,[])),
      ?_assertEqual([1],     l:intersperse(0,[1])),
-     ?_assertEqual([1,0,2], l:intersperse(0,[1,2]))
+     ?_assertEqual([1,0,2], l:intersperse(0,[1,2])),
+     ?_assertError(badarg, l:intersperse(0,notlist))
     ].
 intersperse_length_test_() ->
     tq(?FORALL(Xs, non_empty(list(any())),

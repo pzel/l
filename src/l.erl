@@ -122,13 +122,14 @@ reverse(L) when is_list(L) -> reverse_(L,[]);
 reverse(_)                 -> error(badarg).
 
 -spec reverse_([A], [A]) -> [A].
-reverse_([], Acc)           -> Acc;
-reverse_([H|T], Acc)        -> reverse_(T, [H|Acc]).
+reverse_([], Acc)        -> Acc;
+reverse_([H|T], Acc)     -> reverse_(T, [H|Acc]).
 
 -spec intersperse(A, [A]) -> [A].
-intersperse(_,[])            -> [];
-intersperse(_,[Last])        -> [Last];
-intersperse(E,[H|T])         -> [H,E|intersperse(E,T)].
+intersperse(_,[])         -> [];
+intersperse(_,[Last])     -> [Last];
+intersperse(E,[H|T])      -> [H,E|intersperse(E,T)];
+intersperse(_,_)          -> error(badarg).
 
 -spec intercalate([A], [[A]]) -> [A].
 intercalate(E,L)              -> concat(intersperse(E,L)).
