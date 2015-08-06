@@ -118,9 +118,12 @@ length(L)            -> erlang:length(L).
 map(F,L)                   -> [F(X) || X <- L].
 
 -spec reverse([A]) -> [A].
-reverse(L)             -> reverse(L,[]).
-reverse([], Acc)       -> Acc;
-reverse([H|T], Acc)    -> reverse(T, [H|Acc]).
+reverse(L) when is_list(L) -> reverse_(L,[]);
+reverse(_)                 -> error(badarg).
+
+-spec reverse_([A], [A]) -> [A].
+reverse_([], Acc)           -> Acc;
+reverse_([H|T], Acc)        -> reverse_(T, [H|Acc]).
 
 -spec intersperse(A, [A]) -> [A].
 intersperse(_,[])            -> [];

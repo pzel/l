@@ -18,7 +18,8 @@ map_inductive_test_() ->
 %% reverse/1
 reverse_test_() ->
     [?_assertEqual([],  l:reverse([])),
-     ?_assertEqual([1], l:reverse([1]))
+     ?_assertEqual([1], l:reverse([1])),
+     ?_assertError(badarg, l:reverse(notlist))
     ].
 reverse_inductive1_test_() ->
     tq(?FORALL(Xs, non_empty(list(any())),
