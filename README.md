@@ -20,49 +20,49 @@ remedy is code removal via better abstractions.
 Basic functions
 ---------------
 
-### append/2
+#### append(list(), list()) -> list().
 
 Take two lists (L1,L2)  and glue L2 to the end of L1.
 
     [1,2] = l:append([1], [2]).
 
 
-### head/1
+#### head ([A]) -> A.
 Return the first element of a non-empty list.
 
     a = l:head([a,b,c]).  
     {'EXIT',{badarg,_}} = (catch l:head([])).
 
 
-### last/1
+#### last ([A]) -> A.
 Return the last element of a non-empty list.
 
     c = l:last([a,b,c]).  
     {'EXIT',{badarg,_}} = (catch l:last([])).
 
 
-### tail/1
+#### tail ([A]) -> [A].
 Return everything but the head of a non-empty list.
 
     [b,c] = l:tail([a,b,c]).
     [] = l:tail([1]).
     {'EXIT',{badarg,_}} = (catch l:tail([])).
 
-### init/1
+#### init ([A]) -> [A].
 Return everything *but* the last element of a non-empty list.
 
     [a,b] = l:init([a,b,c]).
     {'EXIT',{badarg,_}} = (catch l:init([])).
 
 
-### null/1
+#### null (list()) -> boolean().
 Answer the question: "is this an empty list?"
 
     false = l:null([a,b,c]).
     true = l:null([]).
     {'EXIT',{badarg,_}} = (catch l:null([])).
 
-### length/1
+#### length (list()) -> non\_neg\_integer().
 Return the length of the list.
 
     3 = l:length([a,b,c]).
