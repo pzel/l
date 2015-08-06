@@ -43,7 +43,9 @@ intersperse_length_test_() ->
 intercalate_test_() ->
     [?_assertEqual([], l:intercalate([], [])),
      ?_assertEqual([7], l:intercalate([1], [[7]])),
-     ?_assertEqual([7,1,8], l:intercalate([1], [[7],[8]]))
+     ?_assertEqual([7,1,8], l:intercalate([1], [[7],[8]])),
+     ?_assertError(badarg, l:intercalate([1], [[7],[8], notlist])),
+     ?_assertError(badarg, l:intercalate(notlist, [[7],[8]]))
     ].
 
 %% transpose/1

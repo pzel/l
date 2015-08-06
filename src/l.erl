@@ -132,7 +132,9 @@ intersperse(E,[H|T])      -> [H,E|intersperse(E,T)];
 intersperse(_,_)          -> error(badarg).
 
 -spec intercalate([A], [[A]]) -> [A].
-intercalate(E,L)              -> concat(intersperse(E,L)).
+intercalate(E,L)
+  when is_list(L), is_list(E) -> concat(intersperse(E,L));
+intercalate(_,_)              -> error(badarg).
 
 -spec transpose([[A]])    -> ([[A]]).
 transpose(Ls = [[_|_]|_]) -> [ map(fun head/1,Ls) | transpose(map(fun tail/1,Ls)) ];
