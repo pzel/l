@@ -93,8 +93,11 @@ The following functions are implemented:
         zip_with/3,
         zip3/3,
         zip_with3/4,
+        zip4/4,
+        zip_with4/5,
         unzip/1
         unzip3/1
+        unzip4/1
 
 
 ### Special lists

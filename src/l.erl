@@ -70,9 +70,12 @@
         ,zip_with/3
         ,zip3/3
         ,zip_with3/4
+        ,zip4/4
+        ,zip_with4/5
 
         ,unzip/1
         ,unzip3/1
+        ,unzip4/1
 
         ,nub/1
         ,delete/2
@@ -548,6 +551,25 @@ zip_with3_(_, _, _, [], Acc) -> l:reverse(Acc);
 zip_with3_(F, [A|As], [B|Bs], [C|Cs], Acc) ->
     zip_with3_(F, As, Bs, Cs, [F(A,B,C) | Acc]).
 
+zip4(A,B,C,D) when is_list(A), is_list(B), is_list(C), is_list(D) ->
+    zip_with4_(fun l_zips:tup/4, A, B, C, D, []);
+zip4(_,_,_,_) -> error(badarg).
+
+-spec zip_with4(fun((A,B,C,D)->E),[A],[B],[C],[D]) -> [E].
+zip_with4(F,A,B,C,D) when
+      is_list(A), is_list(B), is_list(C), is_list(D),
+      is_function(F,4) ->
+    zip_with4_(F,A,B,C,D,[]);
+zip_with4(_,_,_,_,_) -> error(badarg).
+
+-spec zip_with4_(fun((A,B,C,D) -> E),[A],[B],[C],[D],[E]) -> [E].
+zip_with4_(_, [], _, _, _, Acc) -> l:reverse(Acc);
+zip_with4_(_, _, [], _, _, Acc) -> l:reverse(Acc);
+zip_with4_(_, _, _, [], _, Acc) -> l:reverse(Acc);
+zip_with4_(_, _, _, _, [], Acc) -> l:reverse(Acc);
+zip_with4_(F, [A|As], [B|Bs], [C|Cs], [D|Ds], Acc) ->
+    zip_with4_(F, As, Bs, Cs, Ds, [F(A,B,C,D) | Acc]).
+
 -spec unzip([{A,B}]) -> {[A],[B]}.
 unzip(L) when is_list(L) -> unzip_(L, {[], []});
 unzip(_) -> error(badarg).
@@ -563,3 +585,11 @@ unzip3(_) -> error(badarg).
 -spec unzip3_([{A,B,C}], {[A],[B],[C]}) -> {[A],[B],[C]}.
 unzip3_([], {Acc,Bcc,Ccc}) -> {l:reverse(Acc), l:reverse(Bcc), l:reverse(Ccc)};
 unzip3_([{A,B,C}|Tl], {Acc,Bcc,Ccc}) -> unzip3_(Tl, {[A|Acc],[B|Bcc],[C|Ccc]}).
+
+-spec unzip4([{A,B,C,D}]) -> {[A],[B],[C],[D]}.
+unzip4(L) when is_list(L) -> unzip4_(L, {[],[],[],[]});
+unzip4(_) -> error(badarg).
+
+-spec unzip4_([{A,B,C,D}], {[A],[B],[C],[D]}) -> {[A],[B],[C],[D]}.
+unzip4_([], {Acc,Bcc,Ccc,Dcc}) -> {l:reverse(Acc), l:reverse(Bcc), l:reverse(Ccc), l:reverse(Dcc)};
+unzip4_([{A,B,C,D}|Tl], {Acc,Bcc,Ccc,Dcc}) -> unzip4_(Tl, {[A|Acc],[B|Bcc],[C|Ccc], [D|Dcc]}).
