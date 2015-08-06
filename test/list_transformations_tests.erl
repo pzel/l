@@ -70,7 +70,8 @@ subsequences_test_() ->
     [?_assertEqual([""],      l:subsequences("")),
      ?_assertEqual(["", "a"], l:subsequences("a")),
      ?_assertEqual ([[],"c","b","bc","a","ac","ab","abc"],
-                    l:subsequences("abc"))
+                    l:subsequences("abc")),
+     ?_assertError(badarg, l:subsequences(notlist))
     ].
 subsequences_length_test_() ->
     tq(?FORALL(Xs, helpers:short_list(int()),

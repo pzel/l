@@ -141,12 +141,13 @@ transpose(Ls = [[_|_]|_]) -> [ map(fun head/1,Ls) | transpose(map(fun tail/1,Ls)
 transpose([[]|_])         -> [];
 transpose([])             -> [].
 
--spec subsequences([A]) -> list([A]).
-subsequences([])        -> [[]];
+-spec subsequences([A]) -> [[A]].
+subsequences([])    -> [[]];
 subsequences([H|T]) ->
     Subseqs = subsequences(T),
     append(Subseqs, map(fun(Subseq) -> [ H | Subseq ] end,
-                        Subseqs)).
+                        Subseqs));
+subsequences(_)     -> error(badarg).
 
 -spec permutations([A]) -> [[A]].
 permutations([])        -> [[]];
