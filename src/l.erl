@@ -152,9 +152,10 @@ subsequences(_)     -> error(badarg).
 -spec permutations([A]) -> [[A]].
 permutations([])        -> [[]];
 permutations([El])      -> [[El]];
-permutations(List)      ->
-    F = fun(El)-> [ [El|Rest] || Rest <- permutations(delete(El, List)) ] end,
-    concat(map(F,List)).
+permutations(L) when is_list(L) ->
+    F = fun(El)-> [ [El|Rest] || Rest <- permutations(delete(El, L)) ] end,
+    concat(map(F,L));
+permutations(_)        -> error(badarg).
 
 -spec fold(fun((A,B) -> B), B, [A]) -> B.
 fold(_,V,[])                            -> V;

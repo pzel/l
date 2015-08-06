@@ -82,7 +82,8 @@ permutations_empty_test_() ->
     [?_assertEqual([""],  l:permutations("")),
      ?_assertEqual(["a"], l:permutations("a")),
      ?_assertEqual(["abc","acb","bac","bca","cab","cba"],
-                 l:permutations("abc"))
+                 l:permutations("abc")),
+     ?_assertError(badarg, l:permutations(notlist))
      ].
 
 %% This property times out. Research how to increase eunit timeout.
