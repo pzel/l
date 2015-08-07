@@ -12,10 +12,9 @@ Haskell provides a very intuitive and feature-complete list operation library,
 and I believe Erlang programmers could benefit from adopting this common
 idiomatic core. 
 
-Also: I don't like having to implement little 'helper functions' for list
-manipulation in random places in the codebase. Helper functions smell, and the
+Also: having to implement little 'helper functions' for list manipulation in
+random places in the codebase is suboptimal. Helper functions smell, and the
 remedy is code removal via better abstractions.
-
 
 
 ### Basic functions
@@ -135,7 +134,8 @@ must be the same.
     [[1,2,3], [1,2,3]] = l:transpose([[1,1], [2,2], [3,3]]).
     [[1,1], [2,2]] = l:transpose(l:transpose([[1,1], [2,2]])).
     
-#### subsequences([A]) -> [[A]].
+
+#### subsequences ([A]) -> [[A]].
 
 List all the possible sublists of the argument list. Element ordering does not
 matter, i.e. all possible subsets of the elements in the list will be returned.
@@ -145,7 +145,8 @@ matter, i.e. all possible subsets of the elements in the list will be returned.
     [[],[c],[b],[b,c],[a],[a,c],[a,b],[a,b,c]] = l:subsequences([a,b,c]).
     {'EXIT',{badarg,_}} = (catch l:subsequences(notlist)).
 
-#### permutations([A]) -> [[A]].
+
+#### permutations ([A]) -> [[A]].
 
 List all the possible orderings of the given list.
 
@@ -157,10 +158,62 @@ List all the possible orderings of the given list.
 
 
 ### Reducing lists (folds)
-        foldr/3
-        foldr/2  (known as foldr1 in Data.List)
-        foldl/3
-        foldl/2  (known as foldl1 in Data.List)
+
+#### foldr fun ((A,B) -> B), B, [A]) -> B.
+
+Reduce the list of A-typed values to a single B-typed value, using the given
+function. The function will first receive the supplied seed value and the
+last element of the list.
+
+    Add = fun(A,B) -> A + B end.
+    0 = l:foldr(Add, 0, []).
+    10 = l:foldr(Add, 0, [1,2,3,4]).
+    {'EXIT',{badarg,_}} = (catch l:foldr(notfun, 0, [])).
+    {'EXIT',{badarg,_}} = (catch l:foldr(Add, 0, notlist)).
+
+    AddShow = fun(A,B) -> io:format("~p + ~p~n", [A,B]), A+B end.
+    6 = l:foldr(AddShow, 0, [1,2,3]).
+    %% prints:
+      3 + 0
+      2 + 3
+      1 + 5
+
+#### foldr (fun((A,A) -> A), non_empty_list(A)) -> A.
+
+Reduce the non-empty list using the given function.
+
+    Add = fun(A,B) -> A + B end.
+    3 = l:foldr(Add, [1,2]).
+    {'EXIT',{badarg,_}} = (catch l:foldr(Add, [])).
+
+
+#### foldl (fun((B,A) -> B), B, [A]) -> B.
+
+Reduce the list of A-typed values to a single B-typed value, using the given
+function. The function will first receive the supplied seed value and the first
+element of the list.
+
+    Add = fun(A,B) -> A + B end.
+    0 = l:foldl(Add, 0, []).
+    10 = l:foldl(Add, 0, [1,2,3,4]).
+    {'EXIT',{badarg,_}} = (catch l:foldl(notfun, 0, [])).
+    {'EXIT',{badarg,_}} = (catch l:foldl(Add, 0, notlist)).
+
+    AddShow = fun(A,B) -> io:format("~p + ~p~n", [A,B]), A+B end.
+    6 = l:foldl(AddShow, 0, [1,2,3]).
+    %% prints:
+      0 + 1
+      1 + 2
+      3 + 3
+
+#### foldl (fun((A,A) -> A), non_empty_list(A)) -> A.
+
+Reduce the non-empty list using the given function.
+
+    Add = fun(A,B) -> A + B end.
+    3 = l:foldl(Add, [1,2]).
+    {'EXIT',{badarg,_}} = (catch l:foldl(Add, [])).
+
 
 ### Special folds
         concat/1
