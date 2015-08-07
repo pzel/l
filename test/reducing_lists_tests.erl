@@ -71,6 +71,7 @@ foldl_in_terms_of_foldr_test_() ->
 
 foldl_test_() ->
     [?_assertError(badarg, l:foldl(notfun, 1, [1,2,3])),
+     ?_assertError(badarg, l:foldl(notfun, 1, [])),
      ?_assertError(badarg, l:foldl(fun(A,B)-> {A,B} end, 1, notlist))
      ].
 

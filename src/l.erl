@@ -171,15 +171,15 @@ foldr(_,[])                           -> error(badarg);
 foldr(_,[H|[]])                       -> H;
 foldr(F,[H|T])                        -> F(H, foldr(F, T)).
 
--spec foldl(fun((B,A) -> B), B, [A]) -> B.
-foldl(_,V,[])                            -> V;
-foldl(F,V,[H|T]) when is_function(F,2)   -> foldl(F, F(V,H), T);
-foldl(_,_,_)                             -> error(badarg).
+-spec foldl(fun((B,A) -> B), B, [A])   -> B.
+foldl(F,V,[]) when is_function(F,2)    -> V;
+foldl(F,V,[H|T]) when is_function(F,2) -> foldl(F, F(V,H), T);
+foldl(_,_,_)                           -> error(badarg).
 
--spec foldl(fun((_,_) -> A),ne_list(A))   -> A.
-foldl(_, [])                              -> error(badarg);
-foldl(F,[H1|[]]) when is_function(F,2)    -> H1;
-foldl(F,[H1,H2|T]) when is_function(F,2)  -> foldl(F, F(H1,H2), T).
+-spec foldl(fun((_,_) -> A),ne_list(A))  -> A.
+foldl(_, [])                             -> error(badarg);
+foldl(F,[H1|[]]) when is_function(F,2)   -> H1;
+foldl(F,[H1,H2|T]) when is_function(F,2) -> foldl(F, F(H1,H2), T).
 
 -spec nub([A]) -> [A].
 nub(L) when is_list(L) -> nub_(L, []);
