@@ -158,15 +158,15 @@ permutations(L) when is_list(L) ->
 permutations(_)        -> error(badarg).
 
 -spec fold(fun((A,B) -> B), B, [A]) -> B.
-fold(_,V,[])                            -> V;
+fold(F,V,[]) when is_function(F,2)      -> V;
 fold(F,V,[H|T]) when is_function(F,2)   -> F(H, fold(F,V,T));
 fold(_,_,_)                             -> error(badarg).
 
 %% @doc This is just an alias
 -spec foldr(fun((A,B) -> B), B, [A]) -> B.
-foldr(F,V,L)                             -> fold(F,V,L).
+foldr(F,V,L)                         -> fold(F,V,L).
 
--spec foldr(fun((A,A) -> A), [A]) -> A.
+-spec foldr(fun((A,A) -> A), ne_list(A)) -> A.
 foldr(_,[])                           -> error(badarg);
 foldr(_,[H|[]])                       -> H;
 foldr(F,[H|T])                        -> F(H, foldr(F, T)).

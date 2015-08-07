@@ -14,7 +14,10 @@
 %% foldr/3
 
 foldr_badarg_test_() ->
-    ?_assertError(badarg, l:foldr(notfun, 2, [1])).
+    [
+     ?_assertError(badarg, l:foldr(notfun, 2, [1])),
+     ?_assertError(badarg, l:foldr(notfun, 2, []))
+    ].
 
 %% foldr is the standard fold ;)
 %% Using the univeral property from Hutton[99].
