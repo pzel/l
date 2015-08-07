@@ -16,8 +16,9 @@ Also: having to implement little 'helper functions' for list manipulation in
 random places in the codebase is suboptimal. Helper functions smell, and the
 remedy is code removal via better abstractions.
 
-
+___________________
 ### Basic functions
+
 
 #### append(list(), list()) -> list().
 
@@ -77,8 +78,9 @@ Return the length of the list.
     {'EXIT',{badarg,_}} = (catch l:length(not_list)).
 
 
-
+________________________
 ### List transformations
+
 
 #### map (fun((A)->B), [A]) -> [B].
 
@@ -156,7 +158,7 @@ List all the possible orderings of the given list.
     {'EXIT',{badarg,_}} = (catch l:permutations(notlist)).
 
 
-
+__________________________
 ### Reducing lists (folds)
 
 #### foldr fun ((A,B) -> B), B, [A]) -> B.
@@ -178,7 +180,7 @@ last element of the list.
       2 + 3
       1 + 5
 
-#### foldr (fun((A,A) -> A), non_empty_list(A)) -> A.
+#### foldr (fun((A,A) -> A), non\_empty\_list(A)) -> A.
 
 Reduce the non-empty list using the given function.
 
@@ -214,20 +216,121 @@ Reduce the non-empty list using the given function.
     3 = l:foldl(Add, [1,2]).
     {'EXIT',{badarg,_}} = (catch l:foldl(Add, [])).
 
-
+_________________
 ### Special folds
-        concat/1
-        concat_map/2
-        'and'/1
-        'or'/1
-        any/1
-        all/2
-        sum/1
-        product/1
-        maximum/1
-        minimum/1
 
+
+#### concat ([[A]]) -> [A]
+
+Concatenate all elements in the given list-of-lists.
+
+    [] = l:concat([]).
+    [] = l:concat([[]]).
+    [] = l:concat([ [], [], []]).
+    [1,2,3,4,5,6,7] = l:concat([ [1,2,3], [4], [], [5,6,7]]).
+
+Unlike `lists:flatten/1`, only one level of nesting is flattened.
+
+    [1,2,3,[4],5,6,7] = l:concat([ [1,2,3], [[4]], [5,6,7]]).
+
+
+#### concat_map (fun((A)->[B]),[A])  -> [B].
+
+Apply the function `(A->[B])` to each element of the given list and concatenate the resulting lists.
+
+    Repeat2 = fun(X) -> [X,X] end.
+    [1,1,2,2,3,3] = l:concat_map(Repeat2, [1,2,3]).
+    "abc" = l:concat_map(fun erlang:atom_to_list/1, [a,b,c]).
+    {'EXIT',{badarg,_}} = (catch l:concat_map(notfun, [a,b,c])).
+    {'EXIT',{badarg,_}} = (catch l:concat_map(Repeat2, notlist)).
+
+
+#### 'and' ([boolean()]) -> boolean().
+
+Return the logical conjunction of a list of boolean values.
+
+    true = l:'and'([]).
+    false = l:'and'([true, true, false]).
+    true =  l:'and'([true, true, true]).
+    {'EXIT',{badarg,_}} = (catch l:'and'([true, true, 1, true])).
+
+
+#### 'or' ([boolean()]) -> boolean().
+
+Return the logical disjunction of a list of boolean values.
+
+    false = l:'or'([]).
+    true = l:'or'([false,false,true]).
+    {'EXIT',{badarg,_}} = (catch l:'or'([false,false,1,true])).
+
+
+#### any (fun((A)->boolean()), [A])        -> boolean().
+
+Answer the question: "Does any element in the list satisfy this predicate?"
+
+    LessThanZero = fun(X)-> X < 0 end.
+    false = l:any(LessThanZero, []).
+    false = l:any(LessThanZero, [1]).
+    true = l:any(LessThanZero, [1,-1]).
+    {'EXIT',{badarg,_}} = (catch l:any(notfun, [1,-1])).
+    {'EXIT',{badarg,_}} = (catch l:any(LessThanZero, notlist)).
+
+
+#### all (fun((A)->boolean()), [A])        -> boolean().
+
+Answer the question: "Do all elements in the list satisfy this predicate?"
+
+    LessThanZero = fun(X)-> X < 0 end.
+    true = l:all(LessThanZero, []).
+    false = l:all(LessThanZero, [1,-1]).
+    true = l:all(LessThanZero, [-1,-2,-3,-4]).
+    {'EXIT',{badarg,_}} = (catch l:all(notfun, [1,-1])).
+    {'EXIT',{badarg,_}} = (catch l:all(LessThanZero, notlist)).
+
+
+#### sum ([number()]) -> number().
+
+Sum the numbers in the list. The empty list sums to 0.
+
+    0 = l:sum([]).
+    10 = l:sum([1,2,3,4]).
+    {'EXIT',{badarg,_}} = (catch l:sum(notlist)).
+
+
+#### product ([number()]) -> number().
+
+Multiply the numbers in the list. The empty list produces 1.
+
+    1 = l:product([]).
+    24 =  l:product([1,2,3,4]).
+    {'EXIT',{badarg,_}} = (catch l:product(notlist)).
+
+#### maximum (non\_empty\_list(A))  -> A.
+
+Return the greatest element in the list. As `erlang:max/2` is used for the comparison, this function will happily compare differently-typed values.  
+Please don't rely on this behaviour!
+
+    3 = l:maximum([1,2,3]).
+    c = l:maximum([a,b,c]).
+    [1,2] = l:maximum([[], [1], [1,2]]).
+    "string" = l:maximum([1,atom,"string"]). %% You don't want to do this!
+    {'EXIT',{badarg,_}} = (catch l:maximum(notlist)).
+
+
+#### minimum (non\_empty\_list(A))  -> A.
+
+Return the greatest element in the list. As `erlang:min/2` is used for the comparison, this function will happily compare differently-typed values.  
+Please don't rely on this behaviour!
+
+    1 = l:minimum([1,2,3]).
+    a = l:minimum([a,b,c]).
+    [] = l:minimum([[], [1], [1,2]]).
+    1 = l:minimum([1,atom,"string"]). %% This is bogus, TBH
+    {'EXIT',{badarg,_}} = (catch l:minimum(notlist)).
+
+__________________
 ### Infinite lists
+
         iterate/3
         replicate/2
 

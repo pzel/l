@@ -233,11 +233,13 @@ all(P,[])    when ?is_pred(P) -> true;
 all(P,[H|T]) when ?is_pred(P) -> P(H) andalso all(P, T);
 all(_,_)                      -> error(badarg).
 
--spec sum([A]) -> A.
-sum(L)         -> fold(fun erlang:'+'/2, 0, L).
+-spec sum([number()]) -> number().
+sum(L) when is_list(L) -> fold(fun erlang:'+'/2, 0, L);
+sum(_)                 -> error(badarg).
 
--spec product([A]) -> A.
-product(L)         -> fold(fun erlang:'*'/2, 1, L).
+-spec product([number()])  -> number().
+product(L) when is_list(L) -> fold(fun erlang:'*'/2, 1, L);
+product(_)                 -> error(badarg).
 
 -spec maximum(ne_list(A))  -> A.
 maximum(L) when is_list(L) -> foldr(fun erlang:max/2, L);
