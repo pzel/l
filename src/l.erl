@@ -207,7 +207,9 @@ concat([L1|LS]) when is_list(L1) -> append(L1, concat(LS));
 concat(_)                        -> error(badarg).
 
 -spec concat_map(fun((A)->[B]),[A])  -> [B].
-concat_map(F, L) when is_function(F) -> concat(map(F, L)).
+concat_map(F, L) when is_function(F,1),
+                      is_list(L) -> concat(map(F, L));
+concat_map(_,_)                  -> error(badarg).
 
 -spec 'and'(list(boolean())) -> boolean().
 'and'([])                    -> true;

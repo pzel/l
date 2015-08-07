@@ -26,6 +26,7 @@ concat_map_test_() ->
     [?_assertEqual([],    l:concat_map(repF(1), [])),
      ?_assertEqual([a],   l:concat_map(repF(1), [a])),
      ?_assertEqual([a,a], l:concat_map(repF(2), [a])),
+     ?_assertError(badarg, l:concat_map(repF(2), notlist)),
      tq(?FORALL(Xs, list(any()),
                 Xs == l:concat_map(repF(1), Xs))),
      tq(?FORALL({N,Xs}, {non_neg_integer(), list(int())},
