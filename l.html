@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Module l</title>
 <link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
 </head>
@@ -15,12 +15,29 @@
 
 <h2><a name="types">Data Types</a></h2>
 
+<h3 class="typedecl"><a name="type-count">count()</a></h3>
+<p><tt>count() = non_neg_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-idx">idx()</a></h3>
+<p><tt>idx() = non_neg_integer()</tt></p>
+
+
+<h3 class="typedecl"><a name="type-maybe">maybe()</a></h3>
+<p><tt>maybe(A) = <a href="maybe.html#type-maybe">maybe:maybe</a>(A)</tt></p>
+
+
+<h3 class="typedecl"><a name="type-ne_list">ne_list()</a></h3>
+<p><tt>ne_list(A) = [A, ...]</tt></p>
+
+
 <h3 class="typedecl"><a name="type-pred">pred()</a></h3>
 <p><tt>pred(A) = fun((A) -&gt; boolean())</tt></p>
 
 
 <h2><a name="index">Function Index</a></h2>
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#and-1">'and'/1</a></td><td></td></tr>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#%21%21-2">'!!'/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#and-1">'and'/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#or-1">'or'/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#all-2">all/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#any-2">any/2</a></td><td></td></tr>
@@ -32,7 +49,13 @@
 <tr><td valign="top"><a href="#drop-2">drop/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#drop_while-2">drop_while/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#drop_while_end-2">drop_while_end/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#elem-2">elem/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#elem_index-2">elem_index/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#elem_indices-2">elem_indices/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#filter-2">filter/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find-2">find/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_index-2">find_index/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find_indices-2">find_indices/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#fold-3">fold/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#foldl-2">foldl/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#foldl-3">foldl/3</a></td><td></td></tr>
@@ -40,16 +63,25 @@
 <tr><td valign="top"><a href="#foldr-3">foldr/3</a></td><td>This is just an alias.</td></tr>
 <tr><td valign="top"><a href="#group-1">group/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#head-1">head/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#index-2">index/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#init-1">init/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#inits-1">inits/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#intercalate-2">intercalate/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#intersperse-2">intersperse/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_infix_of-2">is_infix_of/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_prefix_of-2">is_prefix_of/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#is_suffix_of-2">is_suffix_of/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#iterate-3">iterate/3</a></td><td></td></tr>
 <tr><td valign="top"><a href="#last-1">last/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#length-1">length/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#lookup-2">lookup/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#map-2">map/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#maximum-1">maximum/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#minimum-1">minimum/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#not_elem-2">not_elem/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#nub-1">nub/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#null-1">null/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#partition-2">partition/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#permutations-1">permutations/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#product-1">product/1</a></td><td></td></tr>
 <tr><td valign="top"><a href="#replicate-2">replicate/2</a></td><td></td></tr>
@@ -64,6 +96,15 @@
 <tr><td valign="top"><a href="#take-2">take/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#take_while-2">take_while/2</a></td><td></td></tr>
 <tr><td valign="top"><a href="#transpose-1">transpose/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unzip-1">unzip/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unzip3-1">unzip3/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#unzip4-1">unzip4/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip-2">zip/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip3-3">zip3/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip4-4">zip4/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip_with-3">zip_with/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip_with3-4">zip_with3/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#zip_with4-5">zip_with4/5</a></td><td></td></tr>
 </table>
 
 <h2><a name="functions">Function Details</a></h2>
@@ -75,22 +116,22 @@
 
 <h3 class="function"><a name="head-1">head/1</a></h3>
 <div class="spec">
-<p><tt>head(A::[A]) -&gt; A | none()</tt><br></p>
+<p><tt>head(A::[A]) -&gt; A</tt><br></p>
 </div>
 
 <h3 class="function"><a name="last-1">last/1</a></h3>
 <div class="spec">
-<p><tt>last(A::[A]) -&gt; A | none()</tt><br></p>
+<p><tt>last(A::[A]) -&gt; A</tt><br></p>
 </div>
 
 <h3 class="function"><a name="tail-1">tail/1</a></h3>
 <div class="spec">
-<p><tt>tail(A::[A]) -&gt; [A] | none()</tt><br></p>
+<p><tt>tail(A::[A]) -&gt; [A]</tt><br></p>
 </div>
 
 <h3 class="function"><a name="init-1">init/1</a></h3>
 <div class="spec">
-<p><tt>init(A::[A]) -&gt; [A] | none()</tt><br></p>
+<p><tt>init(A::[A]) -&gt; [A]</tt><br></p>
 </div>
 
 <h3 class="function"><a name="null-1">null/1</a></h3>
@@ -100,7 +141,7 @@
 
 <h3 class="function"><a name="length-1">length/1</a></h3>
 <div class="spec">
-<p><tt>length(L::list()) -&gt; non_neg_integer()</tt><br></p>
+<p><tt>length(L::list()) -&gt; <a href="#type-idx">idx()</a></tt><br></p>
 </div>
 
 <h3 class="function"><a name="map-2">map/2</a></h3>
@@ -150,7 +191,7 @@
 
 <h3 class="function"><a name="foldr-2">foldr/2</a></h3>
 <div class="spec">
-<p><tt>foldr(F::fun((A, A) -&gt; A), A::[A]) -&gt; A</tt><br></p>
+<p><tt>foldr(F::fun((A, A) -&gt; A), T::<a href="#type-ne_list">ne_list</a>(A)) -&gt; A</tt><br></p>
 </div>
 
 <h3 class="function"><a name="foldl-3">foldl/3</a></h3>
@@ -160,12 +201,12 @@
 
 <h3 class="function"><a name="foldl-2">foldl/2</a></h3>
 <div class="spec">
-<p><tt>foldl(F::fun((term(), term()) -&gt; A), A::[A, ...]) -&gt; A</tt><br></p>
+<p><tt>foldl(F::fun((term(), term()) -&gt; A), T::<a href="#type-ne_list">ne_list</a>(A)) -&gt; A</tt><br></p>
 </div>
 
-<h3 class="function"><a name="filter-2">filter/2</a></h3>
+<h3 class="function"><a name="nub-1">nub/1</a></h3>
 <div class="spec">
-<p><tt>filter(F::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; [A]</tt><br></p>
+<p><tt>nub(A::[A]) -&gt; [A]</tt><br></p>
 </div>
 
 <h3 class="function"><a name="delete-2">delete/2</a></h3>
@@ -195,37 +236,42 @@
 
 <h3 class="function"><a name="any-2">any/2</a></h3>
 <div class="spec">
-<p><tt>any(F::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; boolean()</tt><br></p>
+<p><tt>any(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; boolean()</tt><br></p>
 </div>
 
 <h3 class="function"><a name="all-2">all/2</a></h3>
 <div class="spec">
-<p><tt>all(F::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; boolean()</tt><br></p>
+<p><tt>all(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; boolean()</tt><br></p>
 </div>
 
 <h3 class="function"><a name="sum-1">sum/1</a></h3>
 <div class="spec">
-<p><tt>sum(A::[A]) -&gt; A</tt><br></p>
+<p><tt>sum(L::[number()]) -&gt; number()</tt><br></p>
 </div>
 
 <h3 class="function"><a name="product-1">product/1</a></h3>
 <div class="spec">
-<p><tt>product(A::[A]) -&gt; A</tt><br></p>
+<p><tt>product(L::[number()]) -&gt; number()</tt><br></p>
 </div>
 
 <h3 class="function"><a name="maximum-1">maximum/1</a></h3>
 <div class="spec">
-<p><tt>maximum(A::[A, ...]) -&gt; A</tt><br></p>
+<p><tt>maximum(L::<a href="#type-ne_list">ne_list</a>(A)) -&gt; A</tt><br></p>
 </div>
 
 <h3 class="function"><a name="minimum-1">minimum/1</a></h3>
 <div class="spec">
-<p><tt>minimum(A::[A, ...]) -&gt; A</tt><br></p>
+<p><tt>minimum(L::<a href="#type-ne_list">ne_list</a>(A)) -&gt; A</tt><br></p>
+</div>
+
+<h3 class="function"><a name="iterate-3">iterate/3</a></h3>
+<div class="spec">
+<p><tt>iterate(N::<a href="#type-count">count()</a>, F::fun((A) -&gt; B), A) -&gt; [B]</tt><br></p>
 </div>
 
 <h3 class="function"><a name="replicate-2">replicate/2</a></h3>
 <div class="spec">
-<p><tt>replicate(N::non_neg_integer(), A) -&gt; [A]</tt><br></p>
+<p><tt>replicate(N::<a href="#type-idx">idx()</a>, A) -&gt; [A]</tt><br></p>
 </div>
 
 <h3 class="function"><a name="take-2">take/2</a></h3>
@@ -270,7 +316,7 @@
 
 <h3 class="function"><a name="strip_prefix-2">strip_prefix/2</a></h3>
 <div class="spec">
-<p><tt>strip_prefix(A::[A], A::[A]) -&gt; {ok, [A]} | false</tt><br></p>
+<p><tt>strip_prefix(A::[A], A::[A]) -&gt; <a href="#type-maybe">maybe</a>(A)</tt><br></p>
 </div>
 
 <h3 class="function"><a name="group-1">group/1</a></h3>
@@ -280,16 +326,136 @@
 
 <h3 class="function"><a name="inits-1">inits/1</a></h3>
 <div class="spec">
-<p><tt>inits(A::[A]) -&gt; [[A], ...]</tt><br></p>
+<p><tt>inits(A::[A]) -&gt; <a href="#type-ne_list">ne_list</a>([A])</tt><br></p>
 </div>
 
 <h3 class="function"><a name="tails-1">tails/1</a></h3>
 <div class="spec">
-<p><tt>tails(A::[A]) -&gt; [[A], ...]</tt><br></p>
+<p><tt>tails(A::[A]) -&gt; <a href="#type-ne_list">ne_list</a>([A])</tt><br></p>
+</div>
+
+<h3 class="function"><a name="is_prefix_of-2">is_prefix_of/2</a></h3>
+<div class="spec">
+<p><tt>is_prefix_of(A::[A], A::[A]) -&gt; boolean()</tt><br></p>
+</div>
+
+<h3 class="function"><a name="is_suffix_of-2">is_suffix_of/2</a></h3>
+<div class="spec">
+<p><tt>is_suffix_of(A::[A], A::[A]) -&gt; boolean()</tt><br></p>
+</div>
+
+<h3 class="function"><a name="is_infix_of-2">is_infix_of/2</a></h3>
+<div class="spec">
+<p><tt>is_infix_of(A::[A], A::[A]) -&gt; boolean()</tt><br></p>
+</div>
+
+<h3 class="function"><a name="elem-2">elem/2</a></h3>
+<div class="spec">
+<p><tt>elem(A, A::[A]) -&gt; boolean()</tt><br></p>
+</div>
+
+<h3 class="function"><a name="not_elem-2">not_elem/2</a></h3>
+<div class="spec">
+<p><tt>not_elem(A, A::[A]) -&gt; boolean()</tt><br></p>
+</div>
+
+<h3 class="function"><a name="lookup-2">lookup/2</a></h3>
+<div class="spec">
+<p><tt>lookup(A, V::[{A, B}]) -&gt; <a href="#type-maybe">maybe</a>(B)</tt><br></p>
+</div>
+
+<h3 class="function"><a name="find-2">find/2</a></h3>
+<div class="spec">
+<p><tt>find(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; <a href="#type-maybe">maybe</a>(A)</tt><br></p>
+</div>
+
+<h3 class="function"><a name="filter-2">filter/2</a></h3>
+<div class="spec">
+<p><tt>filter(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; [A]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="partition-2">partition/2</a></h3>
+<div class="spec">
+<p><tt>partition(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; {[A], [A]}</tt><br></p>
+</div>
+
+<h3 class="function"><a name="%21%21-2">'!!'/2</a></h3>
+<div class="spec">
+<p><tt>'!!'(L::<a href="#type-ne_list">ne_list</a>(A), Idx::<a href="#type-idx">idx()</a>) -&gt; A</tt><br></p>
+</div>
+
+<h3 class="function"><a name="index-2">index/2</a></h3>
+<div class="spec">
+<p><tt>index(L::<a href="#type-ne_list">ne_list</a>(A), I::<a href="#type-idx">idx()</a>) -&gt; A</tt><br></p>
+</div>
+
+<h3 class="function"><a name="elem_index-2">elem_index/2</a></h3>
+<div class="spec">
+<p><tt>elem_index(A, A::[A]) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-idx">idx()</a>)</tt><br></p>
+</div>
+
+<h3 class="function"><a name="elem_indices-2">elem_indices/2</a></h3>
+<div class="spec">
+<p><tt>elem_indices(A, A::[A]) -&gt; [A]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="find_index-2">find_index/2</a></h3>
+<div class="spec">
+<p><tt>find_index(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; <a href="#type-maybe">maybe</a>(<a href="#type-idx">idx()</a>)</tt><br></p>
+</div>
+
+<h3 class="function"><a name="find_indices-2">find_indices/2</a></h3>
+<div class="spec">
+<p><tt>find_indices(P::<a href="#type-pred">pred</a>(A), A::[A]) -&gt; [<a href="#type-idx">idx()</a>]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="zip-2">zip/2</a></h3>
+<div class="spec">
+<p><tt>zip(A::[A], B::[B]) -&gt; [{A, B}]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="zip_with-3">zip_with/3</a></h3>
+<div class="spec">
+<p><tt>zip_with(F::fun((A, B) -&gt; C), A::[A], B::[B]) -&gt; [C]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="zip3-3">zip3/3</a></h3>
+<div class="spec">
+<p><tt>zip3(A::[A], B::[B], C::[C]) -&gt; [{A, B, C}]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="zip_with3-4">zip_with3/4</a></h3>
+<div class="spec">
+<p><tt>zip_with3(F::fun((A, B, C) -&gt; D), A::[A], B::[B], C::[C]) -&gt; [D]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="zip4-4">zip4/4</a></h3>
+<div class="spec">
+<p><tt>zip4(A, B, C, D) -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="zip_with4-5">zip_with4/5</a></h3>
+<div class="spec">
+<p><tt>zip_with4(F::fun((A, B, C, D) -&gt; E), A::[A], B::[B], C::[C], D::[D]) -&gt; [E]</tt><br></p>
+</div>
+
+<h3 class="function"><a name="unzip-1">unzip/1</a></h3>
+<div class="spec">
+<p><tt>unzip(L::[{A, B}]) -&gt; {[A], [B]}</tt><br></p>
+</div>
+
+<h3 class="function"><a name="unzip3-1">unzip3/1</a></h3>
+<div class="spec">
+<p><tt>unzip3(L::[{A, B, C}]) -&gt; {[A], [B], [C]}</tt><br></p>
+</div>
+
+<h3 class="function"><a name="unzip4-1">unzip4/1</a></h3>
+<div class="spec">
+<p><tt>unzip4(L::[{A, B, C, D}]) -&gt; {[A], [B], [C], [D]}</tt><br></p>
 </div>
 <hr>
 
 <div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
-<p><i>Generated by EDoc, Sep 27 2014, 21:33:37.</i></p>
+<p><i>Generated by EDoc, Jan 1 2016, 15:57:33.</i></p>
 </body>
 </html>
